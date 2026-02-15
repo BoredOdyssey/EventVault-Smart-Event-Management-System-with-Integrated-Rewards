@@ -46,7 +46,7 @@ Points are deducted for irresponsible behavior:
 
 ---
 
-### 📊 Dashboard & Analytics
+###  Dashboard & Analytics
 
 * Total events joined
 * Points earned
@@ -69,8 +69,6 @@ Points are deducted for irresponsible behavior:
 * Encourage user engagement using a reward system
 * Reduce manual event management work
 * Provide a centralized platform for events
-
----
 
 ---
 
