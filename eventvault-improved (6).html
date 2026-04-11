@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventVault — Reward Based Event Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#FAF8F3;color:#2D3436;line-height:1.7;min-height:100vh}
+
+/* ── PAGES ── */
+.page{display:none;min-height:100vh}
+.page.active{display:block}
+
+/* ── HEADER ── */
+.site-header{background:#FFFCF7;border-bottom:3px solid #2D3436;padding:22px 0;box-shadow:0 4px 0 rgba(45,52,54,0.08);position:relative;z-index:50}
+.header-inner{max-width:1140px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.logo{font-family:'Playfair Display',Georgia,serif;font-size:40px;font-weight:700;color:#2D3436;letter-spacing:2px;cursor:pointer;position:relative;display:inline-block;text-decoration:none}
+.logo::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:3px;background:#E17055;transform:scaleX(0);transition:transform .3s}
+.logo:hover::after{transform:scaleX(1)}
+.header-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+/* ── BUTTONS ── */
+.btn{padding:11px 26px;border:2px solid #2D3436;background:transparent;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:14px;transition:all .3s;position:relative;overflow:hidden;letter-spacing:.3px}
+.btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:#2D3436;transition:left .3s;z-index:0}
+.btn:hover::before{left:0}
+.btn:hover{color:#FAF8F3}
+.btn span{position:relative;z-index:1}
+.btn-coral{background:#E17055!important;color:white!important;border-color:#E17055!important}
+.btn-coral::before{background:#D35635!important}
+.btn-green{background:#00B894!important;color:white!important;border-color:#00B894!important}
+.btn-green::before{background:#00A085!important}
+.btn-dark{background:#2D3436;color:#FAF8F3;border-color:#2D3436}
+.btn-dark::before{background:#000}
+.btn-sm{padding:8px 18px;font-size:12px}
+.btn-block{width:100%;padding:16px;background:#2D3436;color:white;border:none;font-size:15px;font-weight:600;cursor:pointer;transition:all .3s;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:1px;text-transform:uppercase}
+.btn-block:hover{background:#000;transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.btn-danger{background:rgba(214,48,49,0.1)!important;border:2px solid #D63031!important;color:#D63031!important}
+.btn-danger::before{background:#D63031!important}
+.btn-danger:hover{color:white!important}
+
+/* ── CONTAINER ── */
+.container{max-width:1140px;margin:0 auto;padding:0 24px}
+
+/* ── LANDING ── */
+#landing{background:#FAF8F3}
+.landing-hero{padding:80px 0 60px;text-align:center;border-bottom:3px solid #2D3436;position:relative;overflow:hidden;background:#FFFCF7}
+.landing-hero::before{content:'✨';position:absolute;font-size:180px;opacity:.04;left:5%;top:50%;transform:translateY(-50%)}
+.landing-hero::after{content:'🎪';position:absolute;font-size:180px;opacity:.04;right:5%;top:50%;transform:translateY(-50%)}
+.hero-badge{display:inline-block;padding:6px 20px;border:2px solid #E17055;color:#E17055;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:24px}
+.hero-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(60px,10vw,110px);font-weight:700;color:#2D3436;line-height:1;margin-bottom:16px;letter-spacing:-1px}
+.hero-sub{font-size:16px;color:#636E72;max-width:480px;margin:0 auto 44px;font-style:italic;line-height:1.8}
+.hero-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.features-row{padding:60px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:28px}
+.feat-card{background:white;border:3px solid #2D3436;padding:32px 28px;box-shadow:6px 6px 0 rgba(45,52,54,0.08);transition:all .3s;position:relative}
+.feat-card:hover{transform:translate(-4px,-4px);box-shadow:10px 10px 0 rgba(45,52,54,0.1)}
+.feat-card::before{content:'';position:absolute;top:0;left:0;width:5px;height:100%;background:#E17055;transition:width .3s}
+.feat-card:hover::before{width:100%;opacity:.04}
+.feat-icon{font-size:36px;margin-bottom:14px}
+.feat-title{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:700;color:#2D3436;margin-bottom:8px}
+.feat-desc{font-size:13px;color:#636E72;line-height:1.7}
+.pts-legend-row{background:white;border:3px solid #2D3436;padding:32px;box-shadow:6px 6px 0 rgba(45,52,54,0.08);margin-bottom:60px}
+.pts-legend-title{font-family:'Playfair Display',Georgia,serif;font-size:36px;color:#2D3436;margin-bottom:20px;text-align:center}
+.pts-items{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.pts-pill{padding:10px 22px;border:2px solid;font-size:13px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif}
+.pts-pill.pos{border-color:#00B894;color:#00B894;background:#E8F8F5}
+.pts-pill.neg{border-color:#D63031;color:#D63031;background:rgba(214,48,49,0.06)}
+
+/* ── AUTH ── */
+#auth{background:#FAF8F3;padding:60px 20px}
+.auth-card{max-width:480px;margin:0 auto;background:white;padding:50px 44px;border:3px solid #2D3436;box-shadow:8px 8px 0 rgba(45,52,54,0.1);position:relative}
+.auth-card::before{content:'';position:absolute;top:14px;left:14px;right:14px;bottom:14px;border:1px dashed #DDD;pointer-events:none}
+.auth-card h2{font-family:'Playfair Display',Georgia,serif;font-size:48px;margin-bottom:8px;color:#2D3436;text-align:center}
+.auth-sub{text-align:center;color:#636E72;margin-bottom:32px;font-size:14px;font-style:italic}
+.auth-tabs{display:flex;gap:0;margin-bottom:28px;border-bottom:3px solid #2D3436}
+.auth-tab{flex:1;padding:12px;text-align:center;background:#EFEFEF;border:3px solid #2D3436;border-bottom:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:14px;transition:all .3s;position:relative;margin-bottom:-3px;color:#636E72}
+.auth-tab.active{background:white;color:#2D3436}
+.auth-tab.active::after{content:'';position:absolute;bottom:-3px;left:0;right:0;height:3px;background:white}
+.form-group{margin-bottom:22px}
+.form-group label{display:block;margin-bottom:8px;color:#2D3436;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.8px;font-family:'Plus Jakarta Sans',sans-serif}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:13px 16px;border:2px solid #DFE6E9;background:#FAFAFA;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;transition:all .3s;outline:none;color:#2D3436}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#E17055;background:white}
+.form-group textarea{resize:vertical;min-height:90px}
+.form-group select option{background:white}
+.auth-err{background:rgba(214,48,49,0.08);border:2px solid rgba(214,48,49,0.3);color:#D63031;padding:10px 14px;font-size:13px;margin-bottom:16px;display:none;font-family:'Plus Jakarta Sans',sans-serif}
+.auth-note{text-align:center;font-size:13px;color:#636E72;margin-top:18px;font-style:italic}
+.auth-note a{color:#E17055;text-decoration:none;font-weight:600;border-bottom:2px solid transparent;transition:border-color .3s;cursor:pointer}
+.auth-note a:hover{border-bottom-color:#E17055}
+.auth-back{display:inline-flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;color:#636E72;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;margin-bottom:22px;transition:color .3s}
+.auth-back:hover{color:#2D3436}
+
+/* ── APP SHELL ── */
+#app.page.active{display:flex;flex-direction:column;min-height:100vh}
+.app-body{display:flex;flex:1}
+
+/* SIDEBAR */
+.sidebar{width:256px;min-height:100%;background:#FFFCF7;border-right:3px solid #2D3436;display:flex;flex-direction:column;padding:28px 16px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar-logo{font-family:'Playfair Display',Georgia,serif;font-size:32px;font-weight:700;color:#2D3436;margin-bottom:32px;padding:0 6px;cursor:pointer}
+.nav-section{font-size:10px;font-weight:700;letter-spacing:2px;color:#95A5A6;text-transform:uppercase;padding:0 6px;margin:18px 0 6px;font-family:'Plus Jakarta Sans',sans-serif}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 12px;cursor:pointer;transition:all .2s;color:#636E72;font-size:13px;font-weight:600;border:none;background:transparent;width:100%;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;border-left:3px solid transparent;position:relative}
+.nav-item:hover{color:#2D3436;background:#F0EDE8;border-left-color:#E17055}
+.nav-item.active{color:#2D3436;background:#FFF5E6;border-left:3px solid #E17055;font-weight:700}
+.nav-icon{font-size:17px;width:22px;text-align:center;flex-shrink:0}
+.sidebar-footer{margin-top:auto;padding-top:16px;border-top:3px solid #2D3436}
+.user-pill{display:flex;align-items:center;gap:10px;padding:12px;background:white;border:2px solid #2D3436;box-shadow:3px 3px 0 rgba(45,52,54,0.08)}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#FDCB6E,#E17055);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:15px;color:white;flex-shrink:0;border:2px solid #2D3436}
+.user-info{flex:1;overflow:hidden;min-width:0}
+.user-name{font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#2D3436}
+.user-role{font-size:10px;color:#95A5A6;text-transform:uppercase;letter-spacing:.5px}
+.btn-logout{background:none;border:none;color:#636E72;cursor:pointer;font-size:15px;transition:color .2s;flex-shrink:0;padding:4px}
+.btn-logout:hover{color:#E17055}
+
+/* MAIN */
+.main{flex:1;background:#FAF8F3;overflow-y:auto;min-height:100vh}
+.main-header{background:#FFFCF7;border-bottom:3px solid #2D3436;padding:18px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20;flex-wrap:wrap;gap:10px}
+.page-title{font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:700;color:#2D3436;line-height:1}
+.main-header-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.content-area{padding:32px 28px}
+.section{display:none}
+.section.active{display:block}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:32px}
+.stat-card{background:white;padding:28px 24px;border:3px solid #2D3436;box-shadow:6px 6px 0 rgba(45,52,54,0.08);transition:all .3s;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;width:5px;height:100%;background:#E17055;transition:width .3s}
+.stat-card:hover{transform:translate(-4px,-4px);box-shadow:10px 10px 0 rgba(45,52,54,0.1)}
+.stat-card:hover::before{width:100%;opacity:.04}
+.stat-num{font-family:'Playfair Display',Georgia,serif;font-size:56px;font-weight:700;color:#E17055;line-height:1;margin-bottom:6px}
+.stat-label{color:#636E72;font-size:12px;text-transform:uppercase;letter-spacing:1px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;font-size:11px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;text-transform:uppercase;letter-spacing:.5px;border:2px solid}
+.badge-gold{background:#FFF9E6;color:#C8920A;border-color:#C8920A}
+.badge-silver{background:#F0F0F0;color:#636E72;border-color:#636E72}
+.badge-bronze{background:#FFF0E6;color:#B84A00;border-color:#B84A00}
+.badge-green{background:#E8F8F5;color:#00B894;border-color:#00B894}
+.badge-red{background:rgba(214,48,49,0.08);color:#D63031;border-color:#D63031}
+.badge-coral{background:#FFF5E6;color:#E17055;border-color:#E17055}
+.badge-blue{background:#EBF5FB;color:#2980B9;border-color:#2980B9}
+
+/* CARDS */
+.card{background:white;border:3px solid #2D3436;box-shadow:6px 6px 0 rgba(45,52,54,0.08);padding:28px}
+.card-title{font-family:'Playfair Display',Georgia,serif;font-size:30px;font-weight:700;color:#2D3436;margin-bottom:20px}
+
+/* TABLES */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#636E72;padding:12px 16px;text-align:left;border-bottom:3px solid #2D3436;background:#FAFAFA;white-space:nowrap}
+td{padding:14px 16px;font-size:13px;border-bottom:2px solid #F0EDE8;vertical-align:middle;font-family:'Plus Jakarta Sans',sans-serif}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#FFFCF7}
+
+/* EVENT CARDS */
+.events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;margin-bottom:32px}
+.event-card{background:white;border:3px solid #2D3436;transition:all .3s;overflow:hidden;position:relative}
+.event-card::before{content:'';position:absolute;top:5px;left:5px;right:5px;bottom:5px;border:1px dashed #DDD;pointer-events:none;opacity:0;transition:opacity .3s;z-index:1}
+.event-card:hover::before{opacity:1}
+.event-card:hover{transform:rotate(-1deg) scale(1.02);box-shadow:12px 12px 0 rgba(45,52,54,0.1)}
+.event-img{height:160px;display:flex;align-items:center;justify-content:center;font-size:60px;border-bottom:3px solid #2D3436;position:relative;overflow:hidden}
+.event-img::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,0.06) 10px,rgba(255,255,255,0.06) 20px)}
+.event-body{padding:20px}
+.event-cat{display:inline-block;padding:5px 14px;background:#FFF5E6;color:#E17055;border:2px solid #E17055;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;font-family:'Plus Jakarta Sans',sans-serif}
+.event-title{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:700;color:#2D3436;margin-bottom:10px;line-height:1.2}
+.event-info{color:#636E72;font-size:12px;line-height:1.8;margin-bottom:14px}
+.event-footer{display:flex;justify-content:space-between;align-items:center;padding-top:16px;border-top:2px dashed #DFE6E9}
+.event-pts{font-family:'Playfair Display',Georgia,serif;color:#E17055;font-weight:700;font-size:26px}
+.cap-bar-wrap{margin-bottom:12px}
+.cap-bar{height:6px;background:#F0EDE8;border:1px solid #DDD;margin-top:5px}
+.cap-fill{height:100%;background:#00B894;transition:width .5s}
+
+/* LEADERBOARD */
+.lb-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:2px solid #F0EDE8}
+.lb-item:last-child{border-bottom:none}
+.lb-item.me{background:#FFF5E6;border-left:4px solid #E17055;padding-left:12px;margin-left:-12px}
+.rank-num{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:28px;width:36px;text-align:center;flex-shrink:0}
+.rank-1{color:#C8920A}.rank-2{color:#636E72}.rank-3{color:#B84A00}
+.lb-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#FDCB6E,#E17055);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:15px;color:white;flex-shrink:0;border:2px solid #2D3436}
+.lb-info{flex:1;min-width:0}
+.lb-name{font-weight:700;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-sub{font-size:11px;color:#95A5A6;margin-top:2px;font-style:italic}
+.lb-pts{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:24px;color:#E17055;flex-shrink:0}
+
+/* PTS LOG */
+.pts-item{display:flex;align-items:center;gap:14px;padding:14px 16px;background:#FAFAFA;border-left:5px solid #00B894;margin-bottom:10px;transition:all .3s}
+.pts-item:hover{transform:translateX(4px);background:#F5F5F5}
+.pts-item.neg{border-left-color:#D63031}
+.pts-info{flex:1;min-width:0}
+.pts-reason{font-weight:700;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#2D3436;margin-bottom:3px}
+.pts-sub{font-size:11px;color:#95A5A6;font-style:italic}
+.pts-val{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:28px;flex-shrink:0}
+.pts-val.pos{color:#00B894}.pts-val.neg{color:#D63031}
+
+/* PROGRESS */
+.progress-bar{height:8px;background:#F0EDE8;border:1px solid #DDD;margin-top:8px}
+.progress-fill{height:100%;background:#E17055;transition:width .7s}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(45,52,54,0.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s ease}
+.modal{background:white;border:3px solid #2D3436;padding:36px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:12px 12px 0 rgba(45,52,54,0.12);position:relative;animation:scaleIn .2s ease}
+.modal-lg{max-width:660px}
+.modal::before{content:'';position:absolute;top:12px;left:12px;right:12px;bottom:12px;border:1px dashed #DDD;pointer-events:none}
+.modal-title{font-family:'Playfair Display',Georgia,serif;font-size:40px;font-weight:700;color:#2D3436;margin-bottom:6px}
+.modal-sub{font-size:13px;color:#636E72;margin-bottom:24px;font-style:italic}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;flex-wrap:wrap}
+
+/* TOAST */
+.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:2000;display:flex;flex-direction:column;gap:10px}
+.toast{background:white;border:3px solid #2D3436;padding:14px 20px;font-size:14px;box-shadow:6px 6px 0 rgba(45,52,54,0.1);animation:slideLeft .3s ease;display:flex;align-items:center;gap:10px;max-width:300px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600}
+.toast.success{border-left:6px solid #00B894}
+.toast.error{border-left:6px solid #D63031}
+.toast.info{border-left:6px solid #2980B9}
+.toast.warning{border-left:6px solid #FDCB6E}
+
+/* PROFILE HERO */
+.profile-hero{background:linear-gradient(135deg,#FDCB6E 0%,#E17055 100%);padding:40px;border:3px solid #2D3436;box-shadow:8px 8px 0 rgba(45,52,54,0.08);margin-bottom:28px;position:relative;overflow:hidden}
+.profile-hero::before{content:'⭐';position:absolute;font-size:120px;opacity:.08;right:30px;top:50%;transform:translateY(-50%)}
+.profile-avatar-lg{width:80px;height:80px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:30px;color:#E17055;flex-shrink:0;border:3px solid #2D3436}
+.profile-name{font-family:'Playfair Display',Georgia,serif;font-size:48px;font-weight:700;color:white;text-shadow:2px 2px 0 rgba(0,0,0,0.1);line-height:1}
+.profile-meta{font-size:14px;color:rgba(255,255,255,.9);margin-top:4px;font-style:italic}
+
+/* MISC */
+.empty-state{text-align:center;padding:50px 20px;color:#95A5A6;font-style:italic;font-family:'Plus Jakarta Sans',sans-serif}
+.empty-icon{font-size:48px;margin-bottom:14px}
+.search-bar{padding:10px 16px;border:2px solid #DFE6E9;background:#FAFAFA;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border-color .3s;width:200px;color:#2D3436}
+.search-bar:focus{border-color:#E17055;background:white}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.chip{padding:7px 16px;border:2px solid #DFE6E9;color:#636E72;background:transparent;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:12px;transition:all .3s;text-transform:uppercase;letter-spacing:.5px}
+.chip.active,.chip:hover{border-color:#E17055;color:#E17055;background:#FFF5E6}
+.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.section-title{font-family:'Playfair Display',Georgia,serif;font-size:32px;font-weight:700;color:#2D3436}
+.divider{border:none;border-top:3px solid #F0EDE8;margin:24px 0}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.ach-item{display:flex;align-items:center;gap:14px;padding:16px;background:white;border:2px solid #DFE6E9;transition:all .3s}
+.ach-item.earned{border:2px solid #00B894;background:#E8F8F5}
+.ach-item:hover{transform:translateX(3px)}
+.ach-icon{font-size:28px;flex-shrink:0}
+.ach-name{font-weight:700;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#2D3436;margin-bottom:3px}
+.ach-desc{font-size:11px;color:#95A5A6;font-style:italic}
+
+/* WELCOME BANNER */
+.welcome-banner{background:linear-gradient(135deg,#FDCB6E 0%,#E17055 100%);padding:40px 36px;border:3px solid #2D3436;box-shadow:8px 8px 0 rgba(45,52,54,0.08);margin-bottom:28px;position:relative;overflow:hidden}
+.welcome-banner::before{content:'✨';position:absolute;font-size:100px;opacity:.08;right:30px;top:50%;transform:translateY(-50%) rotate(-15deg)}
+.welcome-banner h1{font-family:'Playfair Display',Georgia,serif;font-size:52px;color:white;margin-bottom:6px;text-shadow:2px 2px 0 rgba(0,0,0,.08)}
+.welcome-banner p{color:rgba(255,255,255,.92);font-size:15px;font-style:italic}
+
+/* DOODLES */
+.doodle{position:fixed;opacity:.025;pointer-events:none;font-size:180px;z-index:0}
+.d1{top:10%;left:4%}.d2{top:60%;right:6%}.d3{bottom:15%;left:8%}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
+
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#FAF8F3}::-webkit-scrollbar-thumb{background:#DFE6E9;border-radius:3px}
+
+/* HAMBURGER */
+.hamburger{display:none;background:none;border:2px solid #2D3436;cursor:pointer;padding:6px 8px;font-size:20px;line-height:1;font-family:'Plus Jakarta Sans',sans-serif;color:#2D3436}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(45,52,54,0.5);z-index:99}
+.sidebar-overlay.open{display:block}
+
+@media(max-width:900px){
+  .hamburger{display:block}
+  .sidebar{display:none;position:fixed;top:0;left:0;z-index:100;height:100vh;width:256px;box-shadow:8px 0 24px rgba(0,0,0,0.15)}
+  .sidebar.open{display:flex}
+  .form-row{grid-template-columns:1fr}
+  .content-area{padding:20px 16px}
+  .main-header{padding:14px 16px}
+  .dash-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr}.events-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="doodle d1">✨</div>
+<div class="doodle d2">🎪</div>
+<div class="doodle d3">🎨</div>
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- ══ LANDING ══ -->
+<div id="landing" class="page active">
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">EventVault</div>
+      <div class="header-actions">
+        <button class="btn" onclick="showAuth('login')"><span>Sign In</span></button>
+        <button class="btn btn-coral" onclick="showAuth('register')"><span>Join Us</span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="landing-hero">
+    <div class="container">
+      <div class="hero-badge">✦ Reward Based Event Management</div>
+      <h1 class="hero-title">EventVault</h1>
+      <p class="hero-sub">Join events, collect points, and unlock achievements. Climb the leaderboard and get recognized for your participation.</p>
+      <div class="hero-btns">
+        <button class="btn btn-coral" onclick="showAuth('register')"><span>Get Started</span></button>
+        <button class="btn" onclick="showAuth('login')"><span>Sign In</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="features-row">
+      <div class="feat-card"><div class="feat-icon">⚡</div><div class="feat-title">Smart Points</div><div class="feat-desc">Get rewarded for joining events, showing up, and winning competitions. Points help you climb the ranks!</div></div>
+      <div class="feat-card"><div class="feat-icon">🏆</div><div class="feat-title">Live Leaderboard</div><div class="feat-desc">See where you stand in real-time. Earn Bronze, Silver, or Gold badges based on your total points.</div></div>
+      <div class="feat-card"><div class="feat-icon">🤖</div><div class="feat-title">AI Picks</div><div class="feat-desc">Get personalized event suggestions based on what you're interested in and your past participation.</div></div>
+      <div class="feat-card"><div class="feat-icon">📊</div><div class="feat-title">Admin Analytics</div><div class="feat-desc">Easy event management with attendance tracking, bonus awards, and comprehensive reward monitoring.</div></div>
+    </div>
+    <div class="pts-legend-row">
+      <div class="pts-legend-title">How Points Work</div>
+      <div class="pts-items">
+        <div class="pts-pill pos">Registration +10</div>
+        <div class="pts-pill pos">Attendance +30</div>
+        <div class="pts-pill pos">Win / Active Participation +20</div>
+        <div class="pts-pill neg">No-Show −10</div>
+        <div class="pts-pill neg">Late Cancellation −8</div>
+        <div class="pts-pill pos" style="border-color:#C8920A;color:#C8920A;background:#FFF9E6">🥉 Bronze 0+ · 🥈 Silver 100+ · 🥇 Gold 250+</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ AUTH ══ -->
+<div id="auth" class="page">
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo" onclick="showPage('landing')">EventVault</div>
+    </div>
+  </header>
+  <div style="padding:50px 20px">
+    <div class="auth-card">
+      <button class="auth-back" onclick="showPage('landing')">← Back to Home</button>
+      <h2 id="authTitle">Welcome Back!</h2>
+      <p class="auth-sub" id="authSub">Great to see you again</p>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="loginTab" onclick="switchTab('login')">Sign In</button>
+        <button class="auth-tab" id="registerTab" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="loginForm">
+        <div class="auth-err" id="loginErr"></div>
+        <div class="form-group"><label>Email Address</label><input type="email" id="loginEmail" placeholder="you@example.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="loginPass" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <button class="btn-block" onclick="doLogin()">Sign In</button>
+        <p class="auth-note" style="margin-top:14px"><a onclick="showForgotPwd()" style="color:#E17055;cursor:pointer;font-weight:700">Forgot your password?</a></p>
+        <hr style="border:none;border-top:1px solid #F0EDE8;margin:14px 0">
+        <p class="auth-note" style="font-size:11px;color:#95A5A6;margin-bottom:6px">DEMO ACCOUNTS</p>
+        <p class="auth-note"><button onclick="fillAdmin()" style="background:#FFF5E6;border:2px solid #E17055;padding:7px 14px;cursor:pointer;font-size:12px;font-weight:700;color:#E17055;width:100%;text-align:left;font-family:inherit">&#128272; Admin &nbsp; <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c4a5a0a9adaa84a1b2a1aab0b2a5b1a8b0eaa7aba9">[email&#160;protected]</a> &nbsp;/&nbsp; admin123</button></p>
+        <p class="auth-note" style="margin-top:8px"><button onclick="fillUser()" style="background:#E8F8F5;border:2px solid #00B894;padding:7px 14px;cursor:pointer;font-size:12px;font-weight:700;color:#00B894;width:100%;text-align:left;font-family:inherit">&#128100; User &nbsp;&nbsp;&nbsp; <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9bfffef6f4dbfeedfef5efedfaeef7efb5f8f4f6">[email&#160;protected]</a> &nbsp;/&nbsp; demo123</button></p>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="registerForm" style="display:none">
+        <div class="auth-err" id="regErr"></div>
+        <div class="form-group"><label>Your Name</label><input type="text" id="regName" placeholder="Jane Doe"></div>
+        <div class="form-group"><label>Email Address</label><input type="email" id="regEmail" placeholder="you@example.com"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="regPass" placeholder="Min 6 characters"></div>
+        <div class="form-group">
+          <label>Interests (hold Ctrl for multiple)</label>
+          <select id="regInterests" multiple style="height:85px">
+            <option value="Tech">Technology</option><option value="Sports">Sports</option>
+            <option value="Arts">Arts & Culture</option><option value="Business">Business</option>
+            <option value="Social">Social</option><option value="Workshop">Workshop</option>
+          </select>
+        </div>
+        </div>
+        <button class="btn-block" onclick="doRegister()">Create Account</button>
+        <p class="auth-note" style="margin-top:14px">Already a member? <a onclick="switchTab('login')">Sign in</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP SHELL ══ -->
+<div id="app" class="page">
+  <header class="site-header">
+    <div class="header-inner">
+      <button class="hamburger" onclick="toggleSidebar()" title="Menu">☰</button>
+      <a class="logo" onclick="goHome()" title="Go to Dashboard" style="cursor:pointer">EventVault</a>
+      <div class="header-actions" id="headerActions"></div>
+    </div>
+  </header>
+
+  <div class="app-body">
+    <!-- SIDEBAR -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo" onclick="goHome()" style="cursor:pointer" title="Go to Dashboard">EventVault</div>
+
+      <div id="userNav" style="display:none">
+        <div class="nav-section">Main</div>
+        <button class="nav-item active" onclick="showSection('dashboard')"><span class="nav-icon">⚡</span>Dashboard</button>
+        <button class="nav-item" onclick="showSection('events')"><span class="nav-icon">🎯</span>Browse Events</button>
+        <button class="nav-item" onclick="showSection('myEvents')"><span class="nav-icon">📋</span>My Registrations</button>
+        <div class="nav-section">Rewards</div>
+        <button class="nav-item" onclick="showSection('leaderboard')"><span class="nav-icon">🏆</span>Leaderboard</button>
+        <button class="nav-item" onclick="showSection('achievements')"><span class="nav-icon">🥇</span>Achievements</button>
+        <button class="nav-item" onclick="showSection('profile')"><span class="nav-icon">👤</span>My Profile</button>
+      </div>
+
+      <div id="adminNav" style="display:none">
+        <div class="nav-section">Admin</div>
+        <button class="nav-item active" onclick="showSection('adminDash')"><span class="nav-icon">📊</span>Dashboard</button>
+        <button class="nav-item" onclick="showSection('adminEvents')"><span class="nav-icon">🎪</span>Manage Events</button>
+        <button class="nav-item" onclick="showSection('adminUsers')"><span class="nav-icon">👥</span>Participants</button>
+        <button class="nav-item" onclick="showSection('adminAttendance')"><span class="nav-icon">✅</span>Attendance</button>
+        <button class="nav-item" onclick="showSection('adminRewards')"><span class="nav-icon">🎁</span>Rewards Monitor</button>
+        <button class="nav-item" onclick="showSection('leaderboard')"><span class="nav-icon">🏆</span>Leaderboard</button>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="user-pill">
+          <div class="user-avatar" id="sidebarAvatar">?</div>
+          <div class="user-info"><div class="user-name" id="sidebarName">—</div><div class="user-role" id="sidebarRole">—</div></div>
+          <button class="btn-logout" onclick="doLogout()" title="Sign Out">⏏</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <div class="main-header">
+        <h2 class="page-title" id="pageTitle">Dashboard</h2>
+        <div class="main-header-actions" id="mainHeaderActions"></div>
+      </div>
+      <div class="content-area">
+
+        <!-- USER: DASHBOARD -->
+        <div class="section active" id="sec-dashboard">
+          <div class="welcome-banner" id="welcomeBanner"></div>
+          <div class="stats-grid" id="dashStatCards"></div>
+          <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-bottom:24px" class="dash-grid">
+            <div style="min-width:0;overflow:hidden">
+              <div class="section-hdr" style="align-items:flex-start;flex-direction:column;gap:6px"><span class="section-title" style="font-size:28px">🤖 AI Picks For You</span><span style="font-size:13px;color:#95A5A6;font-style:italic">Personalized event suggestions based on your interests</span></div>
+              <div id="aiRecoGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:24px;margin-bottom:24px;min-width:0"></div>
+              <div class="section-hdr"><span class="section-title">🎯 Open Events</span><button class="btn btn-sm" onclick="showSection('events')"><span>Browse All</span></button></div>
+              <div class="events-grid" id="dashUpcoming" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))"></div>
+            </div>
+            <div>
+              <div class="card" style="margin-bottom:18px">
+                <div class="card-title">⚡ Points System</div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div style="display:flex;justify-content:space-between;padding:10px 14px;background:#E8F8F5;border-left:4px solid #00B894"><span style="font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;color:#636E72">Registration</span><strong style="color:#00B894;font-family:'Playfair Display',Georgia,serif;font-size:20px">+10</strong></div>
+                  <div style="display:flex;justify-content:space-between;padding:10px 14px;background:#E8F8F5;border-left:4px solid #00B894"><span style="font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;color:#636E72">Attendance</span><strong style="color:#00B894;font-family:'Playfair Display',Georgia,serif;font-size:20px">+30</strong></div>
+                  <div style="display:flex;justify-content:space-between;padding:10px 14px;background:#E8F8F5;border-left:4px solid #00B894"><span style="font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;color:#636E72">Win / Active</span><strong style="color:#00B894;font-family:'Playfair Display',Georgia,serif;font-size:20px">+20</strong></div>
+                  <div style="display:flex;justify-content:space-between;padding:10px 14px;background:rgba(214,48,49,0.06);border-left:4px solid #D63031"><span style="font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;color:#636E72">No-Show</span><strong style="color:#D63031;font-family:'Playfair Display',Georgia,serif;font-size:20px">−10</strong></div>
+                  <div style="display:flex;justify-content:space-between;padding:10px 14px;background:rgba(214,48,49,0.06);border-left:4px solid #D63031"><span style="font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;color:#636E72">Late Cancel</span><strong style="color:#D63031;font-family:'Playfair Display',Georgia,serif;font-size:20px">−8</strong></div>
+                </div>
+                <div style="margin-top:14px;font-size:11px;color:#95A5A6;font-style:italic;text-align:center;font-family:'Plus Jakarta Sans',sans-serif">Bronze 0+ · Silver 100+ · Gold 250+</div>
+              </div>
+              <div class="card">
+                <div class="card-title">📈 Recent Activity</div>
+                <div id="dashPtsLog"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- USER: EVENTS -->
+        <div class="section" id="sec-events">
+          <div class="chips" id="eventChips">
+            <button class="chip active" onclick="filterEvents('All',this)">All</button>
+            <button class="chip" onclick="filterEvents('Tech',this)">Tech</button>
+            <button class="chip" onclick="filterEvents('Sports',this)">Sports</button>
+            <button class="chip" onclick="filterEvents('Arts',this)">Arts</button>
+            <button class="chip" onclick="filterEvents('Business',this)">Business</button>
+            <button class="chip" onclick="filterEvents('Social',this)">Social</button>
+            <button class="chip" onclick="filterEvents('Workshop',this)">Workshop</button>
+          </div>
+          <div class="events-grid" id="eventsGrid"></div>
+        </div>
+
+        <!-- USER: MY EVENTS -->
+        <div class="section" id="sec-myEvents">
+          <div style="background:white;border:3px solid #2D3436;box-shadow:5px 5px 0 rgba(45,52,54,0.08);margin-bottom:18px;overflow:hidden">
+            <div style="padding:14px 18px;border-bottom:2px solid #F0EDE8"><div style="font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:700;color:#2D3436">Your Event Journey</div></div>
+            <div style="display:flex;flex-wrap:wrap" id="myEvSummary"></div>
+          </div>
+          <div class="chips" id="myEvChips">
+            <button class="chip active" onclick="filterMyEvs('all',this)">All</button>
+            <button class="chip" onclick="filterMyEvs('upcoming',this)">Upcoming</button>
+            <button class="chip" onclick="filterMyEvs('attended',this)">Attended</button>
+            <button class="chip" onclick="filterMyEvs('cancelled',this)">Cancelled</button>
+            <button class="chip" onclick="filterMyEvs('noshow',this)">No-Show</button>
+          </div>
+          <div id="myEventsList"></div>
+        </div>
+
+        <!-- USER: LEADERBOARD -->
+        <div class="section" id="sec-leaderboard">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px" class="dash-grid">
+            <div class="card"><div class="card-title">🏆 Top Performers</div><div id="lbList"></div></div>
+            <div>
+              <div class="card" style="margin-bottom:18px"><div class="card-title">📊 Badge Distribution</div><div id="badgeDist"></div></div>
+              <div class="card"><div class="card-title">🔑 Your Rank</div><div id="myRankCard"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- USER: ACHIEVEMENTS -->
+        <div class="section" id="sec-achievements">
+          <p style="font-size:13px;color:#95A5A6;margin-bottom:20px;font-style:italic;font-family:'Plus Jakarta Sans',sans-serif">Unlock achievements by participating in events and earning points.</p>
+          <div class="ach-grid" id="achGrid"></div>
+        </div>
+
+        <!-- USER: PROFILE -->
+        <div class="section" id="sec-profile">
+          <div class="profile-hero">
+            <div style="display:flex;align-items:center;gap:22px;flex-wrap:wrap">
+              <div class="profile-avatar-lg" id="profileAvatar">?</div>
+              <div>
+                <div class="profile-name" id="profileName">—</div>
+                <div class="profile-meta" id="profileMeta">—</div>
+                <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center" id="profileBadges"></div>
+              <button class="btn btn-sm" style="margin-top:10px" onclick="openModal('changePwdModal')"><span>Change Password</span></button>
+              </div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px" class="dash-grid">
+            <div class="card"><div class="card-title">📈 Full Points History</div><div id="profilePtsLog"></div></div>
+            <div class="card"><div class="card-title">🏅 Badge Progress</div><div id="profileBadgeProgress"></div></div>
+          </div>
+        </div>
+
+        <!-- ADMIN: DASHBOARD -->
+        <div class="section" id="sec-adminDash">
+          <div class="stats-grid" id="adminStatCards"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px" class="dash-grid">
+            <div class="card"><div class="card-title">📝 Recent Registrations</div><div id="recentRegs"></div></div>
+            <div class="card"><div class="card-title">⚡ Points Activity</div><div id="ptsActivity"></div></div>
+          </div>
+          <div class="card"><div class="card-title">📊 Points by Participant</div><div id="adminChartArea" style="padding:10px 0"></div></div>
+        </div>
+
+        <!-- ADMIN: EVENTS -->
+        <div class="section" id="sec-adminEvents">
+          <div class="card">
+            <div class="card-title">All Events</div>
+            <div class="table-wrap">
+              <table><thead><tr><th>Event</th><th>Category</th><th>Date</th><th>Registrations</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="adminEventsBody"></tbody></table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADMIN: USERS -->
+        <div class="section" id="sec-adminUsers">
+          <div class="card">
+            <div class="card-title">All Participants</div>
+            <div class="table-wrap">
+              <table><thead><tr><th>Name</th><th>Email</th><th>Points</th><th>Badge</th><th>Events</th><th>Joined</th><th>Actions</th></tr></thead>
+              <tbody id="adminUsersBody"></tbody></table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADMIN: ATTENDANCE -->
+        <div class="section" id="sec-adminAttendance">
+          <div class="card">
+            <div class="card-title">Mark Attendance</div>
+            <div class="form-group" style="max-width:420px;margin-bottom:24px">
+              <label>Select Event</label>
+              <select id="attEventSel" onchange="loadAttendanceTable()"></select>
+            </div>
+            <div class="table-wrap">
+              <table><thead><tr><th>Participant</th><th>Email</th><th>Registered</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="attendanceBody"></tbody></table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADMIN: REWARDS MONITOR -->
+        <div class="section" id="sec-adminRewards">
+          <div class="stats-grid" id="rewardStatCards"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px" class="dash-grid">
+            <div class="card"><div class="card-title">🎁 Badge Holders</div><div id="rewardBadgeHolders"></div></div>
+            <div class="card"><div class="card-title">📊 Full Points Log</div><div id="rewardFullLog" style="max-height:420px;overflow-y:auto"></div></div>
+          </div>
+        </div>
+
+      </div><!-- /content-area -->
+    </main>
+  </div><!-- /app-body -->
+</div><!-- /app -->
+
+<!-- MODALS -->
+<div id="createEventModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal('createEventModal')">
+  <div class="modal modal-lg">
+    <div class="modal-title">Create New Event</div>
+    <div class="modal-sub">Fill in the details to publish a new event</div>
+    <div class="form-group"><label>Event Name</label><input type="text" id="evName" placeholder="What's the occasion?"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Category</label>
+        <select id="evCat"><option value="Tech">Technology</option><option value="Sports">Sports</option><option value="Arts">Arts & Culture</option><option value="Business">Business</option><option value="Social">Social</option><option value="Workshop">Workshop</option></select>
+      </div>
+      <div class="form-group"><label>Date</label><input type="date" id="evDate"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Max Participants</label><input type="number" id="evMax" value="50" min="1"></div>
+      <div class="form-group"><label>Bonus Points (win)</label><input type="number" id="evBonus" value="20" min="0"></div>
+    </div>
+    <div class="form-group"><label>Description</label><textarea id="evDesc" rows="3" placeholder="Share some details..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('createEventModal')"><span>Cancel</span></button>
+      <button class="btn btn-coral" onclick="createEvent()"><span>Create Event</span></button>
+    </div>
+  </div>
+</div>
+
+<div id="eventDetailModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal('eventDetailModal')">
+  <div class="modal modal-lg" id="eventDetailContent"></div>
+</div>
+
+<div id="bonusModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal('bonusModal')">
+  <div class="modal">
+    <div class="modal-title" id="bonusModalTitle">Award Points</div>
+    <div class="modal-sub">Manually adjust participant points</div>
+    <input type="hidden" id="bonusUserId">
+    <div class="form-group"><label>Points Amount</label><input type="number" id="bonusAmount" placeholder="e.g. 20" min="1"></div>
+    <div class="form-group"><label>Reason</label><input type="text" id="bonusReason" placeholder="e.g. Special Contribution"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('bonusModal')"><span>Cancel</span></button>
+      <button class="btn btn-coral" id="bonusConfirmBtn"><span>Confirm</span></button>
+    </div>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+'use strict';
+
+/* ═══ DATABASE ═══ */
+const DB={
+  get(k,d=[]){try{const v=localStorage.getItem('ev_'+k);return v?JSON.parse(v):d}catch{return d}},
+  set(k,v){localStorage.setItem('ev_'+k,JSON.stringify(v))},
+  users(){return this.get('users',[])},saveUsers(v){this.set('users',v)},
+  events(){return this.get('events',[])},saveEvents(v){this.set('events',v)},
+  regs(){return this.get('regs',[])},saveRegs(v){this.set('regs',v)},
+  ptsLog(){return this.get('ptsLog',[])},savePtsLog(v){this.set('ptsLog',v)},
+  session(){return this.get('session',null)},setSession(v){this.set('session',v)},
+  currentUser(){const s=this.session();if(!s)return null;return this.users().find(u=>u.id===s.id)||null}
+};
+
+/* ═══ SEED ═══ */
+function seedData(){
+  if(localStorage.getItem('ev_v')==='5')return;
+  ['ev_users','ev_events','ev_regs','ev_ptsLog','ev_session'].forEach(k=>localStorage.removeItem(k));
+  localStorage.setItem('ev_v','5');
+  const users=[
+    {id:'u1',name:'Admin User',email:'admin@eventvault.com',password:'admin123',role:'admin',interests:[],secQ:'pet',secA:'buddy',joinedAt:new Date(Date.now()-864e5*60).toISOString()},
+    {id:'u2',name:'Alex Chen',email:'demo@eventvault.com',password:'demo123',role:'user',interests:['Tech','Sports'],secQ:'city',secA:'mumbai',joinedAt:new Date(Date.now()-864e5*30).toISOString()},
+    {id:'u3',name:'Priya Sharma',email:'priya@example.com',password:'pass123',role:'user',interests:['Arts','Business'],secQ:'school',secA:'dps',joinedAt:new Date(Date.now()-864e5*25).toISOString()},
+    {id:'u4',name:'Marcus Lee',email:'marcus@example.com',password:'pass123',role:'user',interests:['Sports','Social'],secQ:'pet',secA:'max',joinedAt:new Date(Date.now()-864e5*20).toISOString()},
+    {id:'u5',name:'Sofia Rodriguez',email:'sofia@example.com',password:'pass123',role:'user',interests:['Workshop','Tech'],secQ:'mother',secA:'santos',joinedAt:new Date(Date.now()-864e5*15).toISOString()},
+    {id:'u6',name:'James Wright',email:'james@example.com',password:'pass123',role:'user',interests:['Business','Social'],joinedAt:new Date(Date.now()-864e5*10).toISOString()},
+  ];
+  DB.saveUsers(users);
+  const now=new Date();
+  const future=d=>new Date(now.getTime()+864e5*d).toISOString().split('T')[0];
+  const past=d=>new Date(now.getTime()-864e5*d).toISOString().split('T')[0];
+  const events=[
+    {id:'e1',name:'AI & Machine Learning Summit',category:'Tech',date:future(5),desc:'Deep dive into AI trends, ML frameworks, and real world deployments.',maxParticipants:60,bonusPoints:20,status:'open',createdBy:'u1'},
+    {id:'e2',name:'City Marathon 2026',category:'Sports',date:future(12),desc:'Annual 42km city marathon through the historic downtown district.',maxParticipants:200,bonusPoints:20,status:'open',createdBy:'u1'},
+    {id:'e3',name:'Startup Pitch Night',category:'Business',date:future(8),desc:'Top 10 startups pitch to VCs and angel investors. Networking included.',maxParticipants:80,bonusPoints:20,status:'open',createdBy:'u1'},
+    {id:'e4',name:'Photography Workshop',category:'Workshop',date:future(15),desc:'Learn landscape and portrait photography from award winning professionals.',maxParticipants:30,bonusPoints:20,status:'open',createdBy:'u1'},
+    {id:'e5',name:'Community Food Festival',category:'Social',date:future(20),desc:'Celebrate local cuisine, live music, and community spirit. Family friendly.',maxParticipants:500,bonusPoints:20,status:'open',createdBy:'u1'},
+    {id:'e6',name:'Contemporary Art Exhibition',category:'Arts',date:past(5),desc:'Showcasing works from 30 emerging artists across 5 galleries.',maxParticipants:150,bonusPoints:20,status:'closed',createdBy:'u1'},
+    {id:'e7',name:'Python Coding Bootcamp',category:'Tech',date:past(10),desc:'Intensive 2 day Python bootcamp covering data science and web development.',maxParticipants:40,bonusPoints:20,status:'closed',createdBy:'u1'},
+    {id:'e8',name:'Basketball Tournament',category:'Sports',date:past(3),desc:'3 on 3 basketball tournament. Prizes for top 3 teams.',maxParticipants:48,bonusPoints:20,status:'closed',createdBy:'u1'},
+  ];
+  DB.saveEvents(events);
+  const regs=[
+    {id:'r1',userId:'u2',eventId:'e1',registeredAt:new Date(Date.now()-864e5*2).toISOString(),attended:false,cancelled:false},
+    {id:'r2',userId:'u2',eventId:'e6',registeredAt:new Date(Date.now()-864e5*7).toISOString(),attended:true,cancelled:false},
+    {id:'r3',userId:'u2',eventId:'e7',registeredAt:new Date(Date.now()-864e5*12).toISOString(),attended:true,cancelled:false},
+    {id:'r4',userId:'u2',eventId:'e8',registeredAt:new Date(Date.now()-864e5*5).toISOString(),attended:false,cancelled:false},
+    {id:'r5',userId:'u3',eventId:'e6',registeredAt:new Date(Date.now()-864e5*6).toISOString(),attended:true,cancelled:false},
+    {id:'r6',userId:'u3',eventId:'e3',registeredAt:new Date(Date.now()-864e5*1).toISOString(),attended:false,cancelled:false},
+    {id:'r7',userId:'u4',eventId:'e8',registeredAt:new Date(Date.now()-864e5*4).toISOString(),attended:true,cancelled:false},
+    {id:'r8',userId:'u4',eventId:'e2',registeredAt:new Date(Date.now()-864e5*1).toISOString(),attended:false,cancelled:false},
+    {id:'r9',userId:'u5',eventId:'e7',registeredAt:new Date(Date.now()-864e5*11).toISOString(),attended:true,cancelled:false},
+    {id:'r10',userId:'u5',eventId:'e4',registeredAt:new Date(Date.now()-864e5*1).toISOString(),attended:false,cancelled:false},
+    {id:'r11',userId:'u6',eventId:'e3',registeredAt:new Date(Date.now()-864e5*1).toISOString(),attended:false,cancelled:false},
+    {id:'r12',userId:'u6',eventId:'e5',registeredAt:new Date(Date.now()-864e5*1).toISOString(),attended:false,cancelled:false},
+  ];
+  DB.saveRegs(regs);
+  const ptsLog=[
+    {id:'p1',userId:'u2',eventId:'e1',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*2).toISOString()},
+    {id:'p2',userId:'u2',eventId:'e6',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*7).toISOString()},
+    {id:'p3',userId:'u2',eventId:'e6',reason:'Event Attendance',points:30,at:new Date(Date.now()-864e5*5).toISOString()},
+    {id:'p4',userId:'u2',eventId:'e7',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*12).toISOString()},
+    {id:'p5',userId:'u2',eventId:'e7',reason:'Event Attendance',points:30,at:new Date(Date.now()-864e5*10).toISOString()},
+    {id:'p6',userId:'u2',eventId:'e7',reason:'Active Participation',points:20,at:new Date(Date.now()-864e5*9).toISOString()},
+    {id:'p7',userId:'u2',eventId:'e8',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*5).toISOString()},
+    {id:'p8',userId:'u2',eventId:'e8',reason:'No Show Penalty',points:-10,at:new Date(Date.now()-864e5*3).toISOString()},
+    {id:'p9',userId:'u3',eventId:'e6',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*6).toISOString()},
+    {id:'p10',userId:'u3',eventId:'e6',reason:'Event Attendance',points:30,at:new Date(Date.now()-864e5*5).toISOString()},
+    {id:'p11',userId:'u3',eventId:'e3',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*1).toISOString()},
+    {id:'p12',userId:'u4',eventId:'e8',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*4).toISOString()},
+    {id:'p13',userId:'u4',eventId:'e8',reason:'Event Attendance',points:30,at:new Date(Date.now()-864e5*3).toISOString()},
+    {id:'p14',userId:'u4',eventId:'e8',reason:'Active Participation',points:20,at:new Date(Date.now()-864e5*3).toISOString()},
+    {id:'p15',userId:'u4',eventId:'e2',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*1).toISOString()},
+    {id:'p16',userId:'u5',eventId:'e7',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*11).toISOString()},
+    {id:'p17',userId:'u5',eventId:'e7',reason:'Event Attendance',points:30,at:new Date(Date.now()-864e5*9).toISOString()},
+    {id:'p18',userId:'u5',eventId:'e4',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*1).toISOString()},
+    {id:'p19',userId:'u6',eventId:'e3',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*1).toISOString()},
+    {id:'p20',userId:'u6',eventId:'e5',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*1).toISOString()},
+  ];
+
+  // Extra points: u2→Gold(260+), u3→Silver(110+), u4→Gold(260+), u5→Silver(110+), u6→Bronze(20)
+  const extra=[
+    {id:'xp1',userId:'u2',eventId:'e3',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*4).toISOString()},
+    {id:'xp2',userId:'u2',eventId:'e3',reason:'Event Attendance',points:30,at:new Date(Date.now()-864e5*3).toISOString()},
+    {id:'xp3',userId:'u2',eventId:'e3',reason:'Active Participation',points:20,at:new Date(Date.now()-864e5*3).toISOString()},
+    {id:'xp4',userId:'u2',eventId:'e5',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*2).toISOString()},
+    {id:'xp5',userId:'u2',eventId:'e4',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*2).toISOString()},
+    {id:'xp6',userId:'u2',eventId:'e4',reason:'Event Attendance',points:30,at:new Date(Date.now()-864e5*1).toISOString()},
+    {id:'xp7',userId:'u2',eventId:'e4',reason:'Active Participation',points:20,at:new Date(Date.now()-864e5*1).toISOString()},
+    {id:'xp8',userId:'u3',reason:'Event Registration',eventId:'e7',points:10,at:new Date(Date.now()-864e5*11).toISOString()},
+    {id:'xp9',userId:'u3',reason:'Event Attendance',eventId:'e7',points:30,at:new Date(Date.now()-864e5*9).toISOString()},
+    {id:'xp10',userId:'u3',reason:'Active Participation',eventId:'e7',points:20,at:new Date(Date.now()-864e5*9).toISOString()},
+    {id:'xp11',userId:'u4',eventId:'e1',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*2).toISOString()},
+    {id:'xp12',userId:'u4',eventId:'e6',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*7).toISOString()},
+    {id:'xp13',userId:'u4',eventId:'e6',reason:'Event Attendance',points:30,at:new Date(Date.now()-864e5*5).toISOString()},
+    {id:'xp14',userId:'u4',eventId:'e6',reason:'Active Participation',points:20,at:new Date(Date.now()-864e5*5).toISOString()},
+    {id:'xp15',userId:'u4',eventId:'e7',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*11).toISOString()},
+    {id:'xp16',userId:'u4',eventId:'e7',reason:'Event Attendance',points:30,at:new Date(Date.now()-864e5*9).toISOString()},
+    {id:'xp17',userId:'u4',eventId:'e7',reason:'Active Participation',points:20,at:new Date(Date.now()-864e5*9).toISOString()},
+    {id:'xp18',userId:'u4',eventId:'e3',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*4).toISOString()},
+    {id:'xp19',userId:'u4',eventId:'e3',reason:'Event Attendance',points:30,at:new Date(Date.now()-864e5*3).toISOString()},
+    {id:'xp20',userId:'u4',eventId:'e3',reason:'Active Participation',points:20,at:new Date(Date.now()-864e5*3).toISOString()},
+    {id:'xp21',userId:'u5',eventId:'e8',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*4).toISOString()},
+    {id:'xp22',userId:'u5',eventId:'e8',reason:'Event Attendance',points:30,at:new Date(Date.now()-864e5*3).toISOString()},
+    {id:'xp23',userId:'u5',eventId:'e6',reason:'Event Registration',points:10,at:new Date(Date.now()-864e5*6).toISOString()},
+    {id:'xp24',userId:'u5',eventId:'e6',reason:'Event Attendance',points:30,at:new Date(Date.now()-864e5*5).toISOString()},
+  ];
+  ptsLog.push(...extra);
+  DB.savePtsLog(ptsLog);
+}
+
+/* ═══ HELPERS ═══ */
+const uid=()=>'id_'+Math.random().toString(36).slice(2)+Date.now().toString(36);
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function fmtDate(d){if(!d)return'—';const dt=new Date(d);return dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
+function getUserPoints(userId){return DB.ptsLog().filter(p=>p.userId===userId).reduce((s,p)=>s+p.points,0)}
+function getBadge(pts){
+  if(pts>=250)return{label:'Gold',cls:'badge-gold',icon:'🥇',next:null,threshold:250};
+  if(pts>=100)return{label:'Silver',cls:'badge-silver',icon:'🥈',next:{label:'Gold',threshold:250}};
+  return{label:'Bronze',cls:'badge-bronze',icon:'🥉',next:{label:'Silver',threshold:100}};
+}
+function getInitials(name){return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}
+
+const CAT_ICONS={Tech:'💻',Sports:'⚽',Arts:'🎨',Business:'💼',Social:'🎉',Workshop:'🔧'};
+const CAT_GRADIENTS={Tech:'linear-gradient(135deg,#74B9FF,#A29BFE)',Sports:'linear-gradient(135deg,#55EFC4,#00B894)',Arts:'linear-gradient(135deg,#FD79A8,#FDCB6E)',Business:'linear-gradient(135deg,#FF7675,#E17055)',Social:'linear-gradient(135deg,#FDCB6E,#E17055)',Workshop:'linear-gradient(135deg,#A29BFE,#6C5CE7)'};
+const CAT_IMAGES={Tech:'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=200&fit=crop&q=80',Sports:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=200&fit=crop&q=80',Arts:'https://images.unsplash.com/photo-1531058020387-3be344556be6?w=400&h=200&fit=crop&q=80',Business:'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=200&fit=crop&q=80',Social:'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=200&fit=crop&q=80',Workshop:'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&h=200&fit=crop&q=80'};
+
+function toast(msg,type='info'){
+  const icons={success:'✓',error:'✕',info:'ℹ',warning:'⚠'};
+  const el=document.createElement('div');
+  el.className=`toast ${type}`;
+  el.innerHTML=`<span>${icons[type]||'ℹ'}</span>${msg}`;
+  document.getElementById('toastWrap').appendChild(el);
+  setTimeout(()=>el.remove(),3200);
+}
+function openModal(id){document.getElementById(id).style.display='flex'}
+function closeModal(id){document.getElementById(id).style.display='none'}
+
+/* ═══ NAVIGATION ═══ */
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function showAuth(tab='login'){showPage('auth');switchTab(tab)}
+function switchTab(tab){
+  ['login','register'].forEach(t=>{
+    document.getElementById(t+'Form').style.display=t===tab?'block':'none';
+    document.getElementById(t+'Tab').classList.toggle('active',t===tab);
+  });
+  document.getElementById('authTitle').textContent=tab==='login'?'Welcome Back!':'Join EventVault';
+  document.getElementById('authSub').textContent=tab==='login'?'Great to see you again':'Start earning points and climbing the leaderboard';
+}
+function showSection(name){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>{if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+name+"'"))n.classList.add('active')});
+  const titles={dashboard:'Dashboard',events:'Browse Events',myEvents:'My Registrations',leaderboard:'Leaderboard',achievements:'Achievements',profile:'My Profile',adminDash:'Admin Dashboard',adminEvents:'Manage Events',adminUsers:'Participants',adminAttendance:'Attendance',adminRewards:'Rewards Monitor'};
+  document.getElementById('pageTitle').textContent=titles[name]||name;
+  const acts={adminEvents:`<button class="btn btn-coral btn-sm" onclick="openModal('createEventModal')"><span>+ New Event</span></button>`};
+  document.getElementById('mainHeaderActions').innerHTML=acts[name]||'';
+  renderSection(name);
+}
+function renderSection(name){
+  ({dashboard:renderDashboard,events:renderEvents,myEvents:renderMyEvents,leaderboard:renderLeaderboard,achievements:renderAchievements,profile:renderProfile,adminDash:renderAdminDash,adminEvents:renderAdminEvents,adminUsers:renderAdminUsers,adminAttendance:renderAdminAttendance,adminRewards:renderAdminRewards}[name]||function(){})();
+}
+
+/* ═══ AUTH ═══ */
+function fillAdmin(){document.getElementById('loginEmail').value='admin@eventvault.com';document.getElementById('loginPass').value='admin123'}
+function fillUser(){document.getElementById('loginEmail').value='demo@eventvault.com';document.getElementById('loginPass').value='demo123'}
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('loginPass').value;
+  const err=document.getElementById('loginErr');err.style.display='none';
+  const user=DB.users().find(u=>u.email.toLowerCase()===email&&u.password===pass);
+  if(!user){err.textContent="Hmm, those credentials don't match. Try again?";err.style.display='block';return}
+  DB.setSession({id:user.id,role:user.role});enterApp(user);
+}
+function doRegister(){
+  const name=document.getElementById('regName').value.trim();
+  const email=document.getElementById('regEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('regPass').value;
+  const role='user';
+  const interests=Array.from(document.getElementById('regInterests').selectedOptions).map(o=>o.value);
+
+  const err=document.getElementById('regErr');err.style.display='none';
+  if(!name||!email||!pass){err.textContent='Please fill in all required fields.';err.style.display='block';return}
+  if(pass.length<6){err.textContent='Password must be at least 6 characters.';err.style.display='block';return}
+  if(DB.users().find(u=>u.email.toLowerCase()===email)){err.textContent='That email is already registered.';err.style.display='block';return}
+  const user={id:uid(),name,email,password:pass,role,interests,joinedAt:new Date().toISOString()};
+  const users=DB.users();users.push(user);DB.saveUsers(users);
+  DB.setSession({id:user.id,role:user.role});
+  toast('Welcome to EventVault! 🎉','success');
+  enterApp(user);
+}
+function enterApp(user){
+  document.getElementById('sidebarAvatar').textContent=getInitials(user.name);
+  document.getElementById('sidebarName').textContent=user.name;
+  document.getElementById('sidebarRole').textContent=user.role==='admin'?'Administrator':'Participant';
+  document.getElementById('userNav').style.display=user.role==='user'?'block':'none';
+  document.getElementById('adminNav').style.display=user.role==='admin'?'block':'none';
+  document.getElementById('headerActions').innerHTML=`<button class="btn btn-sm btn-coral" onclick="doLogout()"><span>👋 Sign Out</span></button>`;
+  showPage('app');
+  showSection(user.role==='admin'?'adminDash':'dashboard');
+}
+function goHome(){
+  const u=DB.currentUser();
+  if(!u) return;
+  showSection(u.role==='admin'?'adminDash':'dashboard');
+}
+function doLogout(){
+  DB.setSession(null);
+  showPage('landing');
+  toast('Successfully signed out. See you soon!','info');
+}
+
+/* ═══ USER: DASHBOARD ═══ */
+function renderDashboard(){
+  const u=DB.currentUser();if(!u)return;
+  const pts=getUserPoints(u.id);
+  const badge=getBadge(pts);
+  const myRegs=DB.regs().filter(r=>r.userId===u.id&&!r.cancelled);
+  const attended=myRegs.filter(r=>r.attended).length;
+  const open=DB.events().filter(e=>e.status==='open').length;
+  document.getElementById('welcomeBanner').innerHTML=`
+    <h1>Hey there, ${esc(u.name.split(' ')[0])}! 👋</h1>
+    <p>You have <strong>${myRegs.filter(r=>!r.attended).length} upcoming events</strong> registered — keep it up!</p>
+    <div style="position:absolute;top:20px;right:24px;display:flex;align-items:center;gap:12px">
+      <span style="font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:700;color:white">⚡${pts} pts</span>
+      <span class="badge ${badge.cls}">${badge.icon} ${badge.label}</span>
+    </div>`;
+  document.getElementById('dashStatCards').innerHTML=[
+    {icon:'⚡',val:pts,label:'Total Points'},
+    {icon:'📋',val:myRegs.length,label:'Registrations'},
+    {icon:'✅',val:attended,label:'Events Attended'},
+    {icon:'🎯',val:open,label:'Open Events'},
+  ].map(c=>`<div class="stat-card"><div style="font-size:28px;margin-bottom:10px">${c.icon}</div><div class="stat-num">${c.val}</div><div class="stat-label">${c.label}</div></div>`).join('');
+  renderAIRecos(u);
+  const openEvents=DB.events().filter(e=>e.status==='open').slice(0,3);
+  const myRegIds=new Set(DB.regs().filter(r=>r.userId===u.id&&!r.cancelled).map(r=>r.eventId));
+  document.getElementById('dashUpcoming').innerHTML=openEvents.length?openEvents.map(e=>buildEventCard(e,myRegIds.has(e.id))).join(''):`<div class="empty-state"><div class="empty-icon">🎯</div><p>No open events yet!</p></div>`;
+  const evMap=Object.fromEntries(DB.events().map(e=>[e.id,e.name]));
+  const log=DB.ptsLog().filter(p=>p.userId===u.id).slice(-6).reverse();
+  document.getElementById('dashPtsLog').innerHTML=log.length?log.map(p=>`
+    <div class="pts-item ${p.points<0?'neg':''}">
+      <div class="pts-info"><div class="pts-reason">${p.reason}</div><div class="pts-sub">${evMap[p.eventId]||'—'} · ${fmtDate(p.at)}</div></div>
+      <div class="pts-val ${p.points>0?'pos':'neg'}">${p.points>0?'+':''}${p.points}</div>
+    </div>`).join(''):`<div class="empty-state" style="padding:20px"><p>No activity yet</p></div>`;
+}
+function renderAIRecos(u){
+  const interests=u.interests||[];
+  const myRegIds=new Set(DB.regs().filter(r=>r.userId===u.id&&!r.cancelled).map(r=>r.eventId));
+  const open=DB.events().filter(e=>e.status==='open'&&!myRegIds.has(e.id));
+  const scored=open.map(e=>({e,score:(interests.includes(e.category)?2:0)+Math.random()})).sort((a,b)=>b.score-a.score).slice(0,4);
+  document.getElementById('aiRecoGrid').innerHTML=scored.length?scored.map(({e})=>`
+    <div onclick="openEventDetail('${e.id}')" style="background:white;border:3px solid #2D3436;padding:32px 28px;cursor:pointer;transition:all .3s;position:relative;box-shadow:5px 5px 0 rgba(45,52,54,0.08);min-width:0;overflow:hidden;min-height:200px" onmouseover="this.style.transform='translate(-4px,-4px)';this.style.boxShadow='9px 9px 0 rgba(45,52,54,0.12)'" onmouseout="this.style.transform='';this.style.boxShadow='5px 5px 0 rgba(45,52,54,0.08)'">
+      <div style="position:absolute;top:14px;right:14px;background:#FFF5E6;border:2px solid #E17055;padding:5px 12px;font-size:12px;font-weight:700;color:#E17055;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:1px">AI PICK</div>
+      <div style="font-size:12px;font-weight:700;color:#E17055;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;font-family:'Plus Jakarta Sans',sans-serif">${e.category}</div>
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:700;color:#2D3436;margin-bottom:10px;line-height:1.3;word-break:break-word">${esc(e.name)}</div>
+      <div style="font-size:15px;color:#95A5A6;margin-bottom:18px;font-style:italic;line-height:1.5">${fmtDate(e.date)} · ⚡ +40 points available</div>
+      <button class="btn btn-green btn-sm" onclick="event.stopPropagation();registerForEvent('${e.id}')" style="padding:10px 20px;font-size:13px"><span>Register</span></button>
+    </div>`).join(''):`<div style="color:#95A5A6;font-size:13px;font-style:italic">No recommendations yet</div>`;
+}
+
+/* ═══ USER: EVENTS ═══ */
+let _evFilter='All';
+function renderEvents(filter){
+  if(filter)_evFilter=filter;
+  const u=DB.currentUser();
+  const myRegIds=new Set(DB.regs().filter(r=>r.userId===u.id&&!r.cancelled).map(r=>r.eventId));
+  let events=DB.events();
+  if(_evFilter!=='All')events=events.filter(e=>e.category===_evFilter);
+  document.getElementById('eventsGrid').innerHTML=events.length?events.map(e=>buildEventCard(e,myRegIds.has(e.id))).join(''):`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🎯</div><p>No events found</p></div>`;
+}
+function filterEvents(cat,el){
+  _evFilter=cat;
+  document.querySelectorAll('#eventChips .chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');renderEvents();
+}
+function buildEventCard(e,isRegistered){
+  const regs=DB.regs().filter(r=>r.eventId===e.id&&!r.cancelled).length;
+  const capPct=Math.min((regs/e.maxParticipants)*100,100);
+  const isFull=regs>=e.maxParticipants;
+  const isPast=new Date(e.date)<new Date();
+  const grad=CAT_GRADIENTS[e.category]||CAT_GRADIENTS['Social'];
+  const icon=CAT_ICONS[e.category]||'🎪';
+  return `<div class="event-card" onclick="openEventDetail('${e.id}')">
+    <div class="event-img" style="background:${grad};position:relative;overflow:hidden"><img src="${CAT_IMAGES[e.category]||CAT_IMAGES.Social}" alt="${e.category}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0" onerror="this.style.display='none'"><div style="position:absolute;inset:0;background:${grad};opacity:0.22"></div><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:46px;z-index:2;text-shadow:0 2px 8px rgba(0,0,0,0.4)">${icon}</div></div>
+    <div class="event-body">
+      <span class="event-cat">${esc(e.category)}</span>
+      <div class="event-title">${esc(e.name)}</div>
+      <div class="event-info">
+        <div>📅 ${fmtDate(e.date)}</div>
+        <div style="font-style:italic;margin-top:6px">${esc((e.desc||'').slice(0,70))}${e.desc&&e.desc.length>70?'...':''}</div>
+      </div>
+      <div class="cap-bar-wrap">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#95A5A6;font-family:'Plus Jakarta Sans',sans-serif"><span>👥 ${regs}/${e.maxParticipants}</span><span>${capPct.toFixed(0)}% full</span></div>
+        <div class="cap-bar"><div class="cap-fill" style="width:${capPct}%"></div></div>
+      </div>
+      <div class="event-footer" onclick="event.stopPropagation()">
+        <div class="event-pts">+${10+30+(e.bonusPoints||20)} pts</div>
+        ${isRegistered?`<span class="badge badge-green" style="padding:8px 14px">✓ Registered</span>`
+          :(e.status==='open'&&!isPast&&!isFull?`<button class="btn btn-green btn-sm" onclick="registerForEvent('${e.id}')"><span>Join Event</span></button>`
+          :(isFull?`<span class="badge badge-red">Full</span>`:
+          `<span class="badge badge-silver">${isPast?'Ended':'Closed'}</span>`))}
+      </div>
+    </div>
+  </div>`;
+}
+function openEventDetail(eid){
+  const e=DB.events().find(ev=>ev.id===eid);if(!e)return;
+  const u=DB.currentUser();
+  const isReg=DB.regs().some(r=>r.eventId===eid&&r.userId===u.id&&!r.cancelled);
+  const regs=DB.regs().filter(r=>r.eventId===eid&&!r.cancelled).length;
+  const capPct=Math.min((regs/e.maxParticipants)*100,100);
+  const isPast=new Date(e.date)<new Date();
+  const grad=CAT_GRADIENTS[e.category]||CAT_GRADIENTS['Social'];
+  const icon=CAT_ICONS[e.category]||'🎪';
+  document.getElementById('eventDetailContent').innerHTML=`
+    <div style="height:180px;background:${grad};border-bottom:3px solid #2D3436;margin:-36px -36px 24px;position:relative;overflow:hidden">
+      <img src="${CAT_IMAGES[e.category]||CAT_IMAGES.Social}" alt="${e.category}" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none'">
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.1) 60%,transparent 100%)"></div>
+      <div style="position:absolute;bottom:14px;left:18px;font-size:38px;z-index:2;text-shadow:0 2px 8px rgba(0,0,0,0.5)">${icon}</div>
+      <div style="position:absolute;top:14px;right:14px;z-index:2"><span class="event-cat" style="background:rgba(255,255,255,0.9)">${esc(e.category)}</span></div>
+    </div>
+    <span class="event-cat">${esc(e.category)}</span>
+    <div style="font-family:'Playfair Display',Georgia,serif;font-size:38px;font-weight:700;color:#2D3436;margin:10px 0 16px;line-height:1.1">${esc(e.name)}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px">
+      <div style="padding:14px;background:#FAFAFA;border-left:4px solid #E17055"><div style="font-size:11px;color:#95A5A6;font-family:'Plus Jakarta Sans',sans-serif;text-transform:uppercase;letter-spacing:.5px">Date</div><div style="font-weight:700;margin-top:4px;font-family:'Plus Jakarta Sans',sans-serif">📅 ${fmtDate(e.date)}</div></div>
+      <div style="padding:14px;background:#FAFAFA;border-left:4px solid #00B894"><div style="font-size:11px;color:#95A5A6;font-family:'Plus Jakarta Sans',sans-serif;text-transform:uppercase;letter-spacing:.5px">Registrations</div><div style="font-weight:700;margin-top:4px;font-family:'Plus Jakarta Sans',sans-serif">👥 ${regs} / ${e.maxParticipants}</div></div>
+      <div style="padding:14px;background:#FFF5E6;border-left:4px solid #FDCB6E"><div style="font-size:11px;color:#95A5A6;font-family:'Plus Jakarta Sans',sans-serif;text-transform:uppercase;letter-spacing:.5px">Points</div><div style="font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:700;color:#E17055;margin-top:2px">+10 reg · +30 attend · +${e.bonusPoints||20} win</div></div>
+      <div style="padding:14px;background:#FAFAFA;border-left:4px solid #2D3436"><div style="font-size:11px;color:#95A5A6;font-family:'Plus Jakarta Sans',sans-serif;text-transform:uppercase;letter-spacing:.5px">Capacity</div><div style="font-weight:700;margin-top:4px;font-family:'Plus Jakarta Sans',sans-serif">${capPct.toFixed(0)}% filled</div></div>
+    </div>
+    <div style="font-size:14px;color:#636E72;line-height:1.8;margin-bottom:18px;font-style:italic">${esc(e.desc)||'No description provided.'}</div>
+    <div class="cap-bar" style="margin-bottom:22px"><div class="cap-fill" style="width:${capPct}%"></div></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
+      <button class="btn btn-sm" onclick="closeModal('eventDetailModal')"><span>Close</span></button>
+      ${isReg?`<span class="badge badge-green" style="padding:8px 16px;font-size:13px">✓ Already Registered</span>`
+        :(e.status==='open'&&!isPast&&regs<e.maxParticipants?`<button class="btn btn-coral" onclick="registerForEvent('${eid}');closeModal('eventDetailModal')"><span>Join This Event →</span></button>`
+        :`<span class="badge badge-silver" style="padding:8px 16px;font-size:13px">${isPast?'Event Ended':'Closed'}</span>`)}
+    </div>`;
+  openModal('eventDetailModal');
+}
+function registerForEvent(eid){
+  const u=DB.currentUser();if(!u)return;
+  const e=DB.events().find(ev=>ev.id===eid);if(!e||e.status!=='open')return;
+  const regs=DB.regs();
+  if(regs.some(r=>r.eventId===eid&&r.userId===u.id&&!r.cancelled)){toast("You're already registered!",'warning');return}
+  if(regs.filter(r=>r.eventId===eid&&!r.cancelled).length>=e.maxParticipants){toast('This event is full!','error');return}
+  regs.push({id:uid(),userId:u.id,eventId:eid,registeredAt:new Date().toISOString(),attended:false,cancelled:false});
+  DB.saveRegs(regs);
+  const log=DB.ptsLog();log.push({id:uid(),userId:u.id,eventId:eid,reason:'Event Registration',points:10,at:new Date().toISOString()});DB.savePtsLog(log);
+  toast(`You're in! +10 points earned ⚡`,'success');
+  const sec=document.querySelector('.section.active')?.id.replace('sec-','');
+  if(sec)renderSection(sec);
+}
+function confirmCancel(eid){
+  const e=DB.events().find(ev=>ev.id===eid);if(!e)return;
+  const hrs=(new Date(e.date)-new Date())/3.6e6;
+  const isLate=hrs>0&&hrs<24;
+  const msg=isLate
+    ?'<div style="background:rgba(214,48,49,0.08);border:2px solid #D63031;padding:12px;margin-bottom:14px;font-family:Plus Jakarta Sans,sans-serif;font-size:13px;color:#D63031">⚠️ <strong>Late cancellation: −8 points</strong><br>This event is less than 24 hours away.</div>'
+    :'<p style="font-size:13px;color:#636E72;font-family:Plus Jakarta Sans,sans-serif">No penalty will be applied.</p>';
+  if(!confirm('Cancel registration for "'+e.name+'"?\n\n'+(isLate?'⚠️ Late cancellation penalty: -8 points applies.':'No penalty applies.'))) return;
+  cancelRegistration(eid);
+}
+function cancelRegistration(eid){
+  const u=DB.currentUser();if(!u)return;
+  const e=DB.events().find(ev=>ev.id===eid);
+  const regs=DB.regs();const reg=regs.find(r=>r.eventId===eid&&r.userId===u.id&&!r.cancelled);if(!reg)return;
+  reg.cancelled=true;DB.saveRegs(regs);
+  const log=DB.ptsLog();
+  log.push({id:uid(),userId:u.id,eventId:eid,reason:'Registration Refund (Cancelled)',points:-10,at:new Date().toISOString()});
+  const hoursUntil=e?(new Date(e.date)-new Date())/3.6e6:999;
+  if(hoursUntil<24&&hoursUntil>0){log.push({id:uid(),userId:u.id,eventId:eid,reason:'Late Cancellation',points:-8,at:new Date().toISOString()});toast('Cancelled. −10 refund, −8 late penalty','warning')}
+  else toast('Registration cancelled. −10 points refunded.','info');
+  DB.savePtsLog(log);
+  const sec=document.querySelector('.section.active')?.id.replace('sec-','');if(sec)renderSection(sec);
+}
+
+/* ═══ MY EVENTS ═══ */
+let _myEvFilter='all';
+function renderMyEvents(f){
+  if(f) _myEvFilter=f;
+  const u=DB.currentUser();
+  const evMap=Object.fromEntries(DB.events().map(e=>[e.id,e]));
+  const allRegs=DB.regs().filter(r=>r.userId===u.id);
+  const now=new Date();
+  function isPast(d){return new Date(d)<now;}
+  function daysUntil(d){return Math.ceil((new Date(d)-now)/864e5);}
+
+  // Summary strip
+  const total=allRegs.length;
+  const upcoming=allRegs.filter(r=>{const e=evMap[r.eventId];return !r.cancelled&&e&&!isPast(e.date)&&!r.attended;}).length;
+  const attended=allRegs.filter(r=>r.attended).length;
+  const cancelled=allRegs.filter(r=>r.cancelled).length;
+  const noshow=allRegs.filter(r=>{const e=evMap[r.eventId];return !r.cancelled&&!r.attended&&e&&isPast(e.date);}).length;
+
+  const summaryEl=document.getElementById('myEvSummary');
+  if(summaryEl) summaryEl.innerHTML=[
+    {v:total,l:'Total',c:'#2D3436'},{v:upcoming,l:'Upcoming',c:'#0984E3'},
+    {v:attended,l:'Attended',c:'#00B894'},{v:cancelled,l:'Cancelled',c:'#D63031'},{v:noshow,l:'No-Show',c:'#95A5A6'}
+  ].map(s=>`<div style="flex:1;text-align:center;padding:14px 8px;border-right:2px solid #F0EDE8;min-width:80px">
+    <div style="font-family:'Playfair Display',Georgia,serif;font-size:32px;font-weight:700;color:${s.c}">${s.v}</div>
+    <div style="font-size:10px;color:#95A5A6;text-transform:uppercase;letter-spacing:.5px;font-family:'Plus Jakarta Sans',sans-serif">${s.l}</div>
+  </div>`).join('');
+
+  // Filter
+  let regs=allRegs;
+  if(_myEvFilter==='upcoming') regs=allRegs.filter(r=>{const e=evMap[r.eventId];return !r.cancelled&&e&&!isPast(e.date)&&!r.attended;});
+  else if(_myEvFilter==='attended') regs=allRegs.filter(r=>r.attended);
+  else if(_myEvFilter==='cancelled') regs=allRegs.filter(r=>r.cancelled);
+  else if(_myEvFilter==='noshow') regs=allRegs.filter(r=>{const e=evMap[r.eventId];return !r.cancelled&&!r.attended&&e&&isPast(e.date);});
+
+  // Sort upcoming first
+  regs=regs.slice().sort((a,b)=>{
+    const ea=evMap[a.eventId],eb=evMap[b.eventId];
+    if(!ea||!eb) return 0;
+    return new Date(ea.date)-new Date(eb.date);
+  });
+
+  const el=document.getElementById('myEventsList')||document.getElementById('myEventsGrid');
+  if(!el) return;
+
+  if(!regs.length){
+    el.innerHTML=`<div class="empty-state"><div class="empty-icon">📋</div><p>No registrations in this category.<br><a onclick="showSection('events')" style="color:#E17055;cursor:pointer;font-weight:700">Browse events to get started!</a></p></div>`;
+    return;
+  }
+
+  const evNameMap=Object.fromEntries(DB.events().map(e=>[e.id,e.name]));
+
+  el.innerHTML=regs.map(r=>{
+    const e=evMap[r.eventId]; if(!e) return '';
+    const past=isPast(e.date);
+    const days=daysUntil(e.date);
+    const grad=CAT_GRADIENTS[e.category]||CAT_GRADIENTS['Social'];
+    const img=CAT_IMAGES[e.category]||CAT_IMAGES.Social;
+    const icon=CAT_ICONS[e.category]||'🎪';
+
+    let stripeColor,statusBadge,statusKey;
+    if(r.cancelled){stripeColor='#D63031';statusBadge='<span class="badge bg-red">✕ Cancelled</span>';statusKey='cancelled';}
+    else if(r.attended){stripeColor='#00B894';statusBadge='<span class="badge bg-green">✅ Attended</span>';statusKey='attended';}
+    else if(past){stripeColor='#95A5A6';statusBadge='<span class="badge bg-grey">No-Show</span>';statusKey='noshow';}
+    else{stripeColor='#0984E3';statusBadge='<span class="badge bg-blue">⬆ Upcoming</span>';statusKey='upcoming';}
+
+    const tl=[
+      {done:true, label:'Registered', sub:'On '+fmtDate(r.registeredAt)},
+      {done:!past||r.attended||r.cancelled, active:statusKey==='upcoming',
+       label:r.cancelled?'Cancelled':past?'Event Passed':'Event Day',
+       sub:r.cancelled?('Cancelled on '+(r.cancelledAt?fmtDate(r.cancelledAt):'—')):(fmtDate(e.date)+(past?'':' · <strong style="color:'+( days<=2?'#E17055':days<=7?'#0984E3':'#00B894')+'">'+days+' day'+(days!==1?'s':'')+' away</strong>'))},
+      {done:r.attended, active:false, label:'Attendance Confirmed', sub:r.attended?'Marked present by organizer':'Pending organizer confirmation'},
+    ];
+
+    const evPts=DB.ptsLog().filter(p=>p.userId===u.id&&p.eventId===e.id).reduce((s,p)=>s+p.points,0);
+
+    return `<div style="background:white;border:3px solid #2D3436;box-shadow:5px 5px 0 rgba(45,52,54,0.08);margin-bottom:16px;overflow:hidden;transition:all .3s" onmouseover="this.style.transform='translate(-2px,-2px)';this.style.boxShadow='7px 7px 0 rgba(45,52,54,0.1)'" onmouseout="this.style.transform='';this.style.boxShadow='5px 5px 0 rgba(45,52,54,0.08)'">
+      <div style="display:flex;border-bottom:3px solid #2D3436">
+        <div style="width:7px;background:${stripeColor};flex-shrink:0"></div>
+        <div style="width:100px;height:90px;flex-shrink:0;position:relative;overflow:hidden;border-right:3px solid #2D3436">
+          <img src="${img}" alt="${e.category}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">
+          <div style="position:absolute;inset:0;background:${grad};opacity:0.25"></div>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:32px">${icon}</div>
+        </div>
+        <div style="flex:1;padding:14px 16px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#E17055;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;font-family:'Plus Jakarta Sans',sans-serif">${e.category}</div>
+            <div style="font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:700;color:#2D3436;line-height:1.1">${esc(e.name)}</div>
+            <div style="font-size:12px;color:#636E72;margin-top:3px;font-style:italic">📅 ${fmtDate(e.date)}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+            ${statusBadge}
+            <div style="font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:700;color:#E17055">⚡${evPts>0?'+':''}${evPts}</div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:14px 16px;background:#FAFAFA;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+        <div style="display:flex;gap:0;align-items:flex-start">
+          ${tl.map((s,i)=>`
+            <div style="display:flex;align-items:flex-start;gap:0">
+              <div style="display:flex;flex-direction:column;align-items:center">
+                <div style="width:22px;height:22px;border:3px solid ${s.done?'#00B894':s.active?'#E17055':'#DFE6E9'};background:${s.done?'#00B894':s.active?'#FFF5E6':'white'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:${s.done?'white':s.active?'#E17055':'#95A5A6'};flex-shrink:0">${s.done?'✓':i+1}</div>
+                ${i<tl.length-1?`<div style="width:2px;height:28px;background:#DFE6E9;margin:3px 0"></div>`:''}
+              </div>
+              <div style="padding:0 16px 0 8px;min-width:120px">
+                <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:11px;color:${s.done?'#2D3436':s.active?'#E17055':'#95A5A6'}">${s.label}</div>
+                <div style="font-size:10px;color:#95A5A6;margin-top:2px;font-style:italic">${s.sub}</div>
+              </div>
+            </div>`).join('')}
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+          ${statusKey==='upcoming'?`<button class="btn btn-danger btn-sm" onclick="confirmCancel('${e.id}')"><span>Cancel Registration</span></button>`:''}
+          <button class="btn btn-sm" onclick="openEventDetail('${e.id}')"><span>View</span></button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function filterMyEvs(f,el){_myEvFilter=f;document.querySelectorAll('#myEvChips .chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');renderMyEvents();}
+
+/* ═══ LEADERBOARD ═══ */
+function renderLeaderboard(){
+  const u=DB.currentUser();
+  const users=DB.users().filter(usr=>usr.role==='user');
+  const ranked=users.map(usr=>({u:usr,pts:getUserPoints(usr.id)})).sort((a,b)=>b.pts-a.pts);
+  const myPos=ranked.findIndex(r=>r.u.id===u.id);
+  document.getElementById('lbList').innerHTML=ranked.slice(0,10).map((r,i)=>{
+    const badge=getBadge(r.pts);const isMe=r.u.id===u.id;
+    return `<div class="lb-item ${isMe?'me':''}">
+      <div class="rank-num rank-${Math.min(i+1,4)}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</div>
+      <div class="lb-avatar">${getInitials(r.u.name)}</div>
+      <div class="lb-info"><div class="lb-name">${esc(r.u.name)}${isMe?' (You)':''}</div><div class="lb-sub"><span class="badge ${badge.cls}">${badge.icon} ${badge.label}</span></div></div>
+      <div class="lb-pts">⚡${r.pts}</div>
+    </div>`;
+  }).join('');
+  const dist={Gold:0,Silver:0,Bronze:0};
+  ranked.forEach(r=>{const b=getBadge(r.pts);dist[b.label]++});
+  document.getElementById('badgeDist').innerHTML=`<div style="display:flex;flex-direction:column;gap:14px">
+    ${[['Gold','🥇','#C8920A',dist.Gold],['Silver','🥈','#636E72',dist.Silver],['Bronze','🥉','#B84A00',dist.Bronze]].map(([l,ic,col,cnt])=>`
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:20px">${ic}</span>
+        <div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:12px;color:#636E72;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:5px"><span>${l}</span><span style="font-weight:700;color:${col}">${cnt}</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${ranked.length?cnt/ranked.length*100:0}%;background:${col}"></div></div>
+        </div>
+      </div>`).join('')}
+  </div>`;
+  if(u.role==='user'&&myPos>=0){
+    const myData=ranked[myPos];const badge=getBadge(myData.pts);
+    document.getElementById('myRankCard').innerHTML=`
+      <div style="padding:16px;background:#FFF5E6;border:2px solid #E17055;display:flex;align-items:center;gap:14px">
+        <div style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:36px;color:#E17055">#${myPos+1}</div>
+        <div><div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:14px">${u.name}</div><div style="display:flex;gap:8px;margin-top:4px;align-items:center"><span class="badge ${badge.cls}">${badge.icon} ${badge.label}</span><span style="font-family:'Playfair Display',Georgia,serif;font-size:20px;color:#E17055">⚡${myData.pts}</span></div></div>
+      </div>`;
+  } else document.getElementById('myRankCard').innerHTML='';
+}
+
+/* ═══ ACHIEVEMENTS ═══ */
+const ACHIEVEMENTS=[
+  {id:'a1',icon:'⚡',name:'First Step',desc:'Register for your first event',check:(_,r)=>r.length>=1},
+  {id:'a2',icon:'🎯',name:'Go Getter',desc:'Register for 3 events',check:(_,r)=>r.length>=3},
+  {id:'a3',icon:'✅',name:'Show Up',desc:'Attend your first event',check:(_,r)=>r.filter(x=>x.attended).length>=1},
+  {id:'a4',icon:'🔥',name:'Committed',desc:'Attend 3 events',check:(_,r)=>r.filter(x=>x.attended).length>=3},
+  {id:'a5',icon:'💯',name:'Century Club',desc:'Earn 100+ total points',check:(pts)=>pts>=100},
+  {id:'a6',icon:'🥇',name:'Gold Standard',desc:'Earn 250+ points — Gold badge!',check:(pts)=>pts>=250},
+  {id:'a7',icon:'🌟',name:'Overachiever',desc:'Earn 500+ total points',check:(pts)=>pts>=500},
+  {id:'a8',icon:'🏆',name:'Champion',desc:'Win or actively participate in an event',check:(_,__,l)=>l.some(p=>p.reason.includes('Active Participation'))},
+  {id:'a9',icon:'🎪',name:'Event Enthusiast',desc:'Register for 5 different events',check:(_,r)=>r.length>=5},
+  {id:'a10',icon:'📅',name:'Loyal Member',desc:'Part of the EventVault community',check:()=>true},
+];
+function renderAchievements(){
+  const u=DB.currentUser();const pts=getUserPoints(u.id);
+  const myRegs=DB.regs().filter(r=>r.userId===u.id);
+  const log=DB.ptsLog().filter(p=>p.userId===u.id);
+  document.getElementById('achGrid').innerHTML=ACHIEVEMENTS.map(a=>{
+    const earned=a.check(pts,myRegs,log);
+    return `<div class="ach-item ${earned?'earned':''}">
+      <div class="ach-icon" style="opacity:${earned?1:.35}">${a.icon}</div>
+      <div><div class="ach-name">${a.name} ${earned?`<span class="badge badge-green" style="font-size:9px;padding:1px 6px">Earned</span>`:''}</div><div class="ach-desc">${a.desc}</div></div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══ PROFILE ═══ */
+function renderProfile(){
+  const u=DB.currentUser();const pts=getUserPoints(u.id);const badge=getBadge(pts);
+  document.getElementById('profileAvatar').textContent=getInitials(u.name);
+  document.getElementById('profileName').textContent=u.name;
+  document.getElementById('profileMeta').textContent=`${u.email} · Joined ${fmtDate(u.joinedAt)}`;
+  document.getElementById('profileBadges').innerHTML=`<span class="badge ${badge.cls}" style="font-size:13px;padding:6px 16px">${badge.icon} ${badge.label}</span><span style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:28px;color:white">⚡${pts} pts</span>`;
+  const evMap=Object.fromEntries(DB.events().map(e=>[e.id,e.name]));
+  const log=DB.ptsLog().filter(p=>p.userId===u.id).reverse();
+  document.getElementById('profilePtsLog').innerHTML=log.length?log.map(p=>`
+    <div class="pts-item ${p.points<0?'neg':''}">
+      <div class="pts-info"><div class="pts-reason">${p.reason}</div><div class="pts-sub">${evMap[p.eventId]||'—'} · ${fmtDate(p.at)}</div></div>
+      <div class="pts-val ${p.points>0?'pos':'neg'}">${p.points>0?'+':''}${p.points}</div>
+    </div>`).join(''):`<div class="empty-state" style="padding:20px"><p>No points history yet</p></div>`;
+  const prog=document.getElementById('profileBadgeProgress');
+  if(badge.next){
+    const pct=Math.min((pts/badge.next.threshold)*100,100);
+    prog.innerHTML=`<div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:#636E72;margin-bottom:8px;font-family:'Plus Jakarta Sans',sans-serif"><span>Current: <strong>${badge.label}</strong></span><span>Next: <strong>${badge.next.label}</strong></span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:#95A5A6;margin-top:6px;font-style:italic"><span>${pts} pts</span><span>${badge.next.threshold} needed</span></div>
+    </div>
+    <p style="font-size:13px;color:#636E72;font-style:italic">Earn <strong style="color:#2D3436">${badge.next.threshold-pts} more points</strong> to reach ${badge.next.label}!</p>`;
+  }else{
+    prog.innerHTML=`<div style="text-align:center;padding:20px"><div style="font-size:48px">🥇</div><div style="font-family:'Playfair Display',Georgia,serif;font-size:28px;font-weight:700;margin-top:8px;color:#C8920A">Gold Badge!</div><div style="font-size:12px;color:#95A5A6;margin-top:4px;font-style:italic">You've reached the highest tier</div></div>`;
+  }
+}
+
+/* ═══ ADMIN: DASHBOARD ═══ */
+function renderAdminDash(){
+  const users=DB.users().filter(u=>u.role==='user');
+  const events=DB.events();const regs=DB.regs().filter(r=>!r.cancelled);const attended=regs.filter(r=>r.attended).length;
+  document.getElementById('adminStatCards').innerHTML=[
+    {icon:'👥',val:users.length,label:'Total Participants'},
+    {icon:'🎪',val:events.length,label:'Total Events'},
+    {icon:'📋',val:regs.length,label:'Active Registrations'},
+    {icon:'✅',val:attended,label:'Attendances Recorded'},
+  ].map(c=>`<div class="stat-card"><div style="font-size:28px;margin-bottom:10px">${c.icon}</div><div class="stat-num">${c.val}</div><div class="stat-label">${c.label}</div></div>`).join('');
+  const evMap=Object.fromEntries(events.map(e=>[e.id,e.name]));
+  const userMap=Object.fromEntries(DB.users().map(u=>[u.id,u.name]));
+  const recRegs=DB.regs().slice(-5).reverse();
+  document.getElementById('recentRegs').innerHTML=recRegs.length?recRegs.map(r=>`
+    <div class="pts-item">
+      <div class="pts-info"><div class="pts-reason">${userMap[r.userId]||'?'}</div><div class="pts-sub">${evMap[r.eventId]||'?'}</div></div>
+      <span class="badge ${r.cancelled?'badge-red':r.attended?'badge-green':'badge-coral'}">${r.cancelled?'Cancelled':r.attended?'Attended':'Registered'}</span>
+    </div>`).join(''):`<div class="empty-state" style="padding:20px"><p>No registrations</p></div>`;
+  const plog=DB.ptsLog().slice(-6).reverse();
+  document.getElementById('ptsActivity').innerHTML=plog.length?plog.map(p=>`
+    <div class="pts-item ${p.points<0?'neg':''}">
+      <div class="pts-info"><div class="pts-reason">${p.reason}</div><div class="pts-sub">${userMap[p.userId]||'?'} · ${evMap[p.eventId]||'?'}</div></div>
+      <div class="pts-val ${p.points>0?'pos':'neg'}">${p.points>0?'+':''}${p.points}</div>
+    </div>`).join(''):`<div class="empty-state" style="padding:20px"><p>No activity</p></div>`;
+  const topUsers=users.map(u=>({name:u.name.split(' ')[0],pts:getUserPoints(u.id)})).sort((a,b)=>b.pts-a.pts).slice(0,6);
+  const maxPts=Math.max(...topUsers.map(u=>u.pts),1);
+  document.getElementById('adminChartArea').innerHTML=`<div style="display:flex;align-items:flex-end;gap:14px;height:130px;padding-bottom:4px">
+    ${topUsers.map(u=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px">
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:16px;font-weight:700;color:#E17055">⚡${u.pts}</div>
+      <div style="width:100%;background:linear-gradient(180deg,#E17055,#FDCB6E);border:2px solid #2D3436;height:${(u.pts/maxPts)*90+10}px;min-height:10px;transition:height .5s"></div>
+      <div style="font-size:11px;color:#636E72;text-align:center;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600">${u.name}</div>
+    </div>`).join('')}
+  </div>`;
+}
+
+/* ═══ ADMIN: EVENTS ═══ */
+function renderAdminEvents(){
+  const events=DB.events();const regs=DB.regs();
+  document.getElementById('adminEventsBody').innerHTML=events.map(e=>{
+    const cnt=regs.filter(r=>r.eventId===e.id&&!r.cancelled).length;
+    return `<tr>
+      <td><strong style="font-family:'Plus Jakarta Sans',sans-serif">${esc(e.name)}</strong></td>
+      <td><span class="badge badge-blue">${e.category}</span></td>
+      <td>${fmtDate(e.date)}</td>
+      <td style="font-family:'Playfair Display',Georgia,serif;font-size:18px">${cnt} / ${e.maxParticipants}</td>
+      <td><span class="badge ${e.status==='open'?'badge-green':'badge-silver'}">${e.status}</span></td>
+      <td style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="btn btn-sm" onclick="toggleEventStatus('${e.id}')"><span>${e.status==='open'?'Close':'Open'}</span></button>
+        <button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}')"><span>Delete</span></button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+function createEvent(){
+  const name=document.getElementById('evName').value.trim();
+  const cat=document.getElementById('evCat').value;
+  const date=document.getElementById('evDate').value;
+  const desc=document.getElementById('evDesc').value.trim();
+  const max=parseInt(document.getElementById('evMax').value)||50;
+  const bonus=parseInt(document.getElementById('evBonus').value)||20;
+  if(!name||!date){toast('Name and date are required','error');return}
+  if(new Date(date)<new Date(new Date().toISOString().split('T')[0])){toast('Event date cannot be in the past','error');return}
+  const events=DB.events();
+  events.push({id:uid(),name,category:cat,date,desc,maxParticipants:max,bonusPoints:bonus,createdBy:DB.currentUser().id,status:'open'});
+  DB.saveEvents(events);closeModal('createEventModal');toast("Your event is live! 🎉",'success');renderAdminEvents();
+  document.getElementById('evName').value='';document.getElementById('evDesc').value='';
+}
+function toggleEventStatus(eid){
+  const events=DB.events();const ev=events.find(e=>e.id===eid);if(!ev)return;
+  ev.status=ev.status==='open'?'closed':'open';DB.saveEvents(events);renderAdminEvents();toast(`Event ${ev.status}`,'info');
+}
+function deleteEvent(eid){
+  if(!confirm('Delete this event? This cannot be undone.'))return;
+  DB.saveEvents(DB.events().filter(e=>e.id!==eid));
+  DB.saveRegs(DB.regs().filter(r=>r.eventId!==eid));
+  // Points history preserved — earned points should not be retroactively removed
+  renderAdminEvents();toast('Event deleted','info');
+}
+
+/* ═══ ADMIN: USERS ═══ */
+let _allUsers=[];
+function renderAdminUsers(){_allUsers=DB.users().filter(u=>u.role==='user');renderUsersTable(_allUsers)}
+function renderUsersTable(users){
+  const regs=DB.regs();
+  document.getElementById('adminUsersBody').innerHTML=users.map(u=>{
+    const pts=getUserPoints(u.id);const badge=getBadge(pts);
+    const cnt=regs.filter(r=>r.userId===u.id&&!r.cancelled).length;
+    return `<tr>
+      <td><strong style="font-family:'Plus Jakarta Sans',sans-serif">${esc(u.name)}</strong></td>
+      <td style="color:#636E72;font-size:12px">${esc(u.email)}</td>
+      <td><span style="font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:700;color:#E17055">⚡${pts}</span></td>
+      <td><span class="badge ${badge.cls}">${badge.icon} ${badge.label}</span></td>
+      <td style="font-family:'Playfair Display',Georgia,serif;font-size:20px">${cnt}</td>
+      <td style="color:#636E72;font-size:12px">${fmtDate(u.joinedAt)}</td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-green btn-sm" onclick="openBonusModal('${u.id}','${esc(u.name)}','award')"><span>+Award</span></button>
+        <button class="btn btn-danger btn-sm" onclick="openBonusModal('${u.id}','${esc(u.name)}','deduct')"><span>−Deduct</span></button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+function openBonusModal(userId,name,type){
+  document.getElementById('bonusModalTitle').textContent=type==='award'?`Award Points to ${name}`:`Deduct Points from ${name}`;
+  document.getElementById('bonusUserId').value=userId;
+  document.getElementById('bonusAmount').value='';
+  document.getElementById('bonusReason').value=type==='award'?'Admin Bonus':'Admin Deduction';
+  document.getElementById('bonusConfirmBtn').querySelector('span').textContent=type==='award'?'Award Points →':'Deduct Points';
+  document.getElementById('bonusConfirmBtn').onclick=()=>confirmBonus(userId,name,type);
+  openModal('bonusModal');
+}
+function confirmBonus(userId,name,type){
+  const amt=parseInt(document.getElementById('bonusAmount').value)||0;
+  const reason=document.getElementById('bonusReason').value.trim()||'Manual Adjustment';
+  if(!amt||amt<=0){toast('Enter a valid amount','error');return}
+  const log=DB.ptsLog();
+  log.push({id:uid(),userId,eventId:'manual',reason,points:type==='award'?amt:-amt,at:new Date().toISOString()});
+  DB.savePtsLog(log);closeModal('bonusModal');renderAdminUsers();
+  toast(`${type==='award'?'+'+amt+' points awarded to':'−'+amt+' deducted from'} ${name}`,'success');
+}
+
+/* ═══ ADMIN: ATTENDANCE ═══ */
+function renderAdminAttendance(){
+  const events=DB.events();
+  const sel=document.getElementById('attEventSel');
+  sel.innerHTML=`<option value="">— Select an event —</option>`+events.map(e=>`<option value="${e.id}">${e.name} (${fmtDate(e.date)})</option>`).join('');
+  document.getElementById('attendanceBody').innerHTML='';
+}
+function loadAttendanceTable(){
+  const eid=document.getElementById('attEventSel').value;
+  if(!eid){document.getElementById('attendanceBody').innerHTML='';return}
+  const regs=DB.regs().filter(r=>r.eventId===eid&&!r.cancelled);
+  const userMap=Object.fromEntries(DB.users().map(u=>[u.id,u]));
+  document.getElementById('attendanceBody').innerHTML=regs.length?regs.map(r=>{
+    const u=userMap[r.userId];if(!u)return'';
+    return `<tr>
+      <td><strong style="font-family:'Plus Jakarta Sans',sans-serif">${esc(u.name)}</strong></td>
+      <td style="color:#636E72;font-size:12px">${esc(u.email)}</td>
+      <td>${fmtDate(r.registeredAt)}</td>
+      <td><span class="badge ${r.attended?'badge-green':'badge-red'}">${r.attended?'✓ Present':'✗ Absent'}</span></td>
+      <td>${!r.attended
+        ?`<button class="btn btn-green btn-sm" onclick="markAttended('${r.id}','${eid}','${r.userId}')"><span>Mark Present</span></button>`
+        :`<button class="btn btn-danger btn-sm" onclick="unmarkAttended('${r.id}','${eid}','${r.userId}')"><span>Remove</span></button>`}
+      </td>
+    </tr>`;
+  }).join(''):`<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">📋</div><p>No registrations for this event</p></div></td></tr>`;
+}
+function markAttended(rid,eid,userId){
+  const regs=DB.regs();const reg=regs.find(r=>r.id===rid);if(!reg||reg.attended)return;
+  reg.attended=true;DB.saveRegs(regs);
+  const log=DB.ptsLog();log.push({id:uid(),userId,eventId:eid,reason:'Event Attendance',points:30,at:new Date().toISOString()});DB.savePtsLog(log);
+  toast('Attendance marked! +30 points awarded','success');loadAttendanceTable();
+}
+function unmarkAttended(rid,eid,userId){
+  const regs=DB.regs();const reg=regs.find(r=>r.id===rid);if(!reg||!reg.attended)return;
+  reg.attended=false;DB.saveRegs(regs);
+  let log=DB.ptsLog();
+  const idx=log.findIndex(p=>p.userId===userId&&p.eventId===eid&&p.reason==='Event Attendance'&&p.points===30);
+  if(idx!==-1){log.splice(idx,1)}else{log.push({id:uid(),userId,eventId:eid,reason:'Attendance Revoked',points:-30,at:new Date().toISOString()})}
+  DB.savePtsLog(log);
+  toast('Attendance removed','info');loadAttendanceTable();
+}
+
+/* ═══ ADMIN: REWARDS MONITOR ═══ */
+function renderAdminRewards(){
+  const users=DB.users().filter(u=>u.role==='user');
+  const ptsAll=users.map(u=>getUserPoints(u.id));
+  const gold=users.filter((_,i)=>ptsAll[i]>=250).length;
+  const silver=users.filter((_,i)=>ptsAll[i]>=100&&ptsAll[i]<250).length;
+  const bronze=users.filter((_,i)=>ptsAll[i]<100).length;
+  const totalPts=ptsAll.reduce((s,p)=>s+p,0);
+  document.getElementById('rewardStatCards').innerHTML=[
+    {icon:'🥇',val:gold,label:'Gold Badge Holders'},
+    {icon:'🥈',val:silver,label:'Silver Badge Holders'},
+    {icon:'🥉',val:bronze,label:'Bronze Badge Holders'},
+    {icon:'⚡',val:totalPts,label:'Points Distributed'},
+  ].map(c=>`<div class="stat-card"><div style="font-size:28px;margin-bottom:10px">${c.icon}</div><div class="stat-num">${c.val}</div><div class="stat-label">${c.label}</div></div>`).join('');
+  const sorted=users.map(u=>({u,pts:getUserPoints(u.id)})).sort((a,b)=>b.pts-a.pts);
+  document.getElementById('rewardBadgeHolders').innerHTML=sorted.map(({u,pts})=>{
+    const badge=getBadge(pts);
+    return `<div class="pts-item">
+      <div class="lb-avatar" style="width:36px;height:36px;font-size:12px">${getInitials(u.name)}</div>
+      <div class="pts-info"><div class="pts-reason">${u.name}</div><div class="pts-sub">${u.email}</div></div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <span class="badge ${badge.cls}">${badge.icon} ${badge.label}</span>
+        <span style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:20px;color:#E17055">⚡${pts}</span>
+      </div>
+    </div>`;
+  }).join('');
+  const evMap=Object.fromEntries(DB.events().map(e=>[e.id,e.name]));
+  const userMap=Object.fromEntries(DB.users().map(u=>[u.id,u.name]));
+  const allLog=DB.ptsLog().slice().reverse();
+  document.getElementById('rewardFullLog').innerHTML=allLog.length?allLog.map(p=>`
+    <div class="pts-item ${p.points<0?'neg':''}">
+      <div class="pts-info"><div class="pts-reason">${p.reason}</div><div class="pts-sub">${userMap[p.userId]||'?'} · ${evMap[p.eventId]||'Manual'} · ${fmtDate(p.at)}</div></div>
+      <div class="pts-val ${p.points>0?'pos':'neg'}">${p.points>0?'+':''}${p.points}</div>
+    </div>`).join(''):`<div class="empty-state" style="padding:20px"><p>No logs</p></div>`;
+}
+
+/* ═══ INIT ═══ */
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay').forEach(m=>{if(m.style.display!=='none')m.style.display='none'}); });
+
+seedData();
+
+// Auto-login if session exists
+const sess=DB.session();
+if(sess){
+  const u=DB.users().find(u=>u.id===sess.id);
+  if(u) enterApp(u);
+}
+
+/* === FORGOT PASSWORD === */
+var _fpUser=null;
+function showForgotPwd(){
+  _fpUser=null;
+  var e=document.getElementById('fpEmail');if(e)e.value='';
+  var er=document.getElementById('fpErr');if(er){er.style.display='none';er.textContent='';}
+  goFpStep(1);openModal('forgotPwdModal');
+}
+function goFpStep(n){[1,2,3].forEach(function(i){var s=document.getElementById('fpStep'+i);if(s)s.style.display=i===n?'block':'none';});}
+function fpVerifyEmail(){
+  var email=(document.getElementById('fpEmail').value||'').trim().toLowerCase();
+  var er=document.getElementById('fpErr');er.style.display='none';
+  if(!email){er.textContent='Please enter your email address.';er.style.display='block';return;}
+  var user=DB.users().find(function(u){return u.email.toLowerCase()===email;});
+  if(!user){er.textContent='No account found with that email address.';er.style.display='block';return;}
+  _fpUser=user;
+  ['fpNewPass','fpNewPass2'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  var er2=document.getElementById('fpErr2');if(er2){er2.style.display='none';er2.textContent='';}
+  goFpStep(2);
+}
+function fpReset(){
+  if(!_fpUser)return;
+  var np=document.getElementById('fpNewPass').value;
+  var np2=document.getElementById('fpNewPass2').value;
+  var er=document.getElementById('fpErr2');er.style.display='none';
+  if(np.length<6){er.textContent='Password must be at least 6 characters.';er.style.display='block';return;}
+  if(np!==np2){er.textContent='Passwords do not match.';er.style.display='block';return;}
+  var users=DB.users();var u=users.find(function(x){return x.id===_fpUser.id;});
+  if(u){u.password=np;DB.saveUsers(users);}
+  goFpStep(3);
+}
+function doChangePassword(){
+  var u=DB.currentUser();if(!u)return;
+  var cur=document.getElementById('cpCur').value;
+  var np=document.getElementById('cpNew').value;
+  var np2=document.getElementById('cpNew2').value;
+  var er=document.getElementById('cpErr');er.style.display='none';
+  if(cur!==u.password){er.textContent='Current password is incorrect.';er.style.display='block';return;}
+  if(np.length<6){er.textContent='New password must be at least 6 characters.';er.style.display='block';return;}
+  if(np!==np2){er.textContent='Passwords do not match.';er.style.display='block';return;}
+  var users=DB.users();var user=users.find(function(x){return x.id===u.id;});
+  if(user){user.password=np;DB.saveUsers(users);}
+  closeModal('changePwdModal');
+  ['cpCur','cpNew','cpNew2'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  toast('Password updated!','success');
+}
+</script>
+
+<div id="forgotPwdModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal('forgotPwdModal')">
+  <div class="modal">
+    <div id="fpStep1">
+      <div class="modal-title">Reset Password</div>
+      <div class="modal-sub">Enter your registered email to continue</div>
+      <div class="auth-err" id="fpErr"></div>
+      <div class="form-group"><label>Email Address</label><input type="email" id="fpEmail" placeholder="you@example.com" onkeydown="if(event.key==='Enter')fpVerifyEmail()"></div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal('forgotPwdModal')"><span>Cancel</span></button>
+        <button class="btn btn-coral" onclick="fpVerifyEmail()"><span>Continue</span></button>
+      </div>
+    </div>
+    <div id="fpStep2" style="display:none">
+      <div class="modal-title">Set New Password</div>
+      <div class="modal-sub">Create a new password for your account</div>
+      <div class="auth-err" id="fpErr2"></div>
+      <div class="form-group"><label>New Password</label><input type="password" id="fpNewPass" placeholder="At least 6 characters"></div>
+      <div class="form-group"><label>Confirm Password</label><input type="password" id="fpNewPass2" placeholder="Re-enter new password"></div>
+      <div class="modal-actions">
+        <button class="btn" onclick="goFpStep(1)"><span>Back</span></button>
+        <button class="btn btn-coral" onclick="fpReset()"><span>Reset Password</span></button>
+      </div>
+    </div>
+    <div id="fpStep3" style="display:none;text-align:center;padding:20px 0">
+      <div style="font-size:56px;margin-bottom:12px">✅</div>
+      <div style="font-family:'Playfair Display',Georgia,serif;font-size:34px;font-weight:700;color:#2D3436;margin-bottom:8px">Password Reset Complete!</div>
+      <div style="font-size:13px;color:#636E72;font-style:italic;margin-bottom:20px">You can now sign in with your new password.</div>
+      <button class="btn btn-coral" onclick="closeModal('forgotPwdModal');switchTab('login')"><span>Go to Sign In</span></button>
+    </div>
+  </div>
+</div>
+<div id="changePwdModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeModal('changePwdModal')">
+  <div class="modal">
+    <div class="modal-title">Change Password</div>
+    <div class="modal-sub">Update your account password</div>
+    <div class="auth-err" id="cpErr"></div>
+    <div class="form-group"><label>Current Password</label><input type="password" id="cpCur" placeholder="Enter current password"></div>
+    <div class="form-group"><label>New Password</label><input type="password" id="cpNew" placeholder="At least 6 characters"></div>
+    <div class="form-group"><label>Confirm New Password</label><input type="password" id="cpNew2" placeholder="Re-enter new password"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal('changePwdModal')"><span>Cancel</span></button>
+      <button class="btn btn-coral" onclick="doChangePassword()"><span>Update Password</span></button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
