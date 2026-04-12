@@ -6,7 +6,7 @@
 **EventVault** is a web based Event Management System designed to help users discover, register, host, and manage events easily. The system also includes a **reward and penalty points mechanism** to encourage responsible participation and active engagement in events.
 
 ---
-
+## link - https://tranquil-salamander-55760e.netlify.app/
 ##  Key Features
 
 ###  User Management
